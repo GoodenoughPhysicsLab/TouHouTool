@@ -9,7 +9,9 @@ import "fast_io/fast_io.h";
 namespace details {
 
 struct color_base {
-    static constexpr ::std::string_view end{"\033[39m"};
+    static inline constexpr decltype(auto) color_end() noexcept {
+        return "\033[39m";
+    }
 };
 
 } //  details
@@ -49,13 +51,13 @@ struct white : ::details::color_base {
 };
 
 template<typename color_t>
-    requires requires { color_t::color; color_t::end; }
+    requires requires { color_t::color; color_t().color_end(); }
 void color_print(::std::string_view str) noexcept
 {
 #ifdef THTOOL_CLOSE_COLOR_PRINT
 	fast_io::io::println(str);
 #else
-	fast_io::io::print(color_t::color, str, color_t::end);
+	fast_io::io::print(color_t::color, str, color_t::color_end());
 #endif
 }
 

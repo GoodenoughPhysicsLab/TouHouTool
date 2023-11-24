@@ -4,7 +4,9 @@
 #    error "do not use MSVC or do not use c++23"
 #endif
 
+import main;
 import prints;
+import keyboard;
 
 import <string_view>;
 
@@ -12,6 +14,7 @@ import "fast_io/fast_io.h";
 
 int main(int argc, char **argv) noexcept
 {
+    thtool::init();
 #ifdef TOUHOU_TOOL_ARGC0
     if (argc == 0) {
         //fast_io::io::perrln("");
@@ -22,7 +25,13 @@ int main(int argc, char **argv) noexcept
     for (int i{1}; i < argc; ++i) {
         ::std::string_view arg_str{argv[i]};
 
-        if (arg_str == "-v" || arg_str == "--version") [[unlikely]] {
+        if (arg_str == "--mouse") {
+            fast_io::io::println(R"(
+thtool mode: mouse
+press ctrl+C to exit)"
+            );
+        }
+        else if (arg_str == "-v" || arg_str == "--version") [[unlikely]] {
             fast_io::io::println("thtool version 0.0.0");
         }
         else if (arg_str == "-h" || arg_str == "--help") [[unlikely]]
@@ -31,11 +40,11 @@ int main(int argc, char **argv) noexcept
 usage: thtool [-v | --version] [-h | --help]
 
 -v | --version: get version of thtool
--h | --help: get help doc of thtool
-)"          ); //TODO: #include "help_doc.txt"
+-h | --help: get help doc of thtool)"
+            ); //TODO: #include "help_doc.txt"
         }
         else {
-            thtool::prints::error("Unknown argument ", arg_str);
+            thtool::prints::error("Unknown argument \"", arg_str, "\"");
         }
     }
 
