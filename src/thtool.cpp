@@ -15,37 +15,17 @@ import "fast_io/fast_io.h";
 int main(int argc, char **argv) noexcept
 {
     thtool::init();
-#ifdef TOUHOU_TOOL_ARGC0
-    if (argc == 0) {
-        //fast_io::io::perrln("");
+
+    if (argc <= 1) {
+        thtool::prints::error("thtool access no argument");
         return -1;
     }
-#endif // TOUHOU_TOOL_ARGC0
 
-    for (int i{1}; i < argc; ++i) {
+    ::std::string_view main_cmd{argv[1]};
+    thtool::main_cmd(main_cmd);
+
+    for (int i{2}; i < argc; ++i) {
         ::std::string_view arg_str{argv[i]};
-
-        if (arg_str == "--mouse") {
-            fast_io::io::println(R"(
-thtool mode: mouse
-press ctrl+C to exit)"
-            );
-        }
-        else if (arg_str == "-v" || arg_str == "--version") [[unlikely]] {
-            fast_io::io::println("thtool version 0.0.0");
-        }
-        else if (arg_str == "-h" || arg_str == "--help") [[unlikely]]
-        {
-            fast_io::io::println(R"(
-usage: thtool [-v | --version] [-h | --help]
-
--v | --version: get version of thtool
--h | --help: get help doc of thtool)"
-            ); //TODO: #include "help_doc.txt"
-        }
-        else {
-            thtool::prints::error("Unknown argument \"", arg_str, "\"");
-        }
     }
 
     return 0;
