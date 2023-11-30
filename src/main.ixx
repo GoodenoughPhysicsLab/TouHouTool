@@ -27,17 +27,17 @@ void init() noexcept {
 }
 
 void main_cmd(::std::string_view s) noexcept {
-	if (s == "version") {
-		fast_io::io::println(thtool::docs::version);
-	}
-	else if (s == "help") {
-		fast_io::io::println(thtool::docs::help_doc);
-	}
-	else if (s == "mouse") {
+	if (s == "mouse") {
 		//
 	}
+	else if (s == "version") [[unlikely]] {
+		fast_io::io::println(thtool::docs::version);
+	}
+	else if (s == "help") [[unlikely]] {
+		fast_io::io::println(thtool::docs::help_doc);
+	}
 	else {
-		thtool::prints::error("Unknown argument: \"", s, "\"");
+		thtool::prints::error("Unknown argument: \"", s, "\"\nget help: ", thtool::prints::cyan::color, "thtool help", thtool::prints::cyan::color_end);
 	}
 }
 

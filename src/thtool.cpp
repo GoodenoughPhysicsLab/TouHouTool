@@ -21,8 +21,7 @@ int main(int argc, char **argv) noexcept
         return -1;
     }
 
-    ::std::string_view main_cmd{argv[1]};
-    thtool::main_cmd(main_cmd);
+    thtool::main_cmd(argv[1]);
 
     for (int i{2}; i < argc; ++i) {
         ::std::string_view arg_str{argv[i]};
