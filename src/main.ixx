@@ -3,6 +3,7 @@
 export module main;
 
 import docs;
+import mouse;
 import prints;
 
 import <cstdlib>;
@@ -28,7 +29,7 @@ void init() noexcept {
 
 void main_cmd(::std::string_view s) noexcept {
 	if (s == "mouse") {
-		//
+		thtool::mouse::main();
 	}
 	else if (s == "version") [[unlikely]] {
 		fast_io::io::println(thtool::docs::version);
