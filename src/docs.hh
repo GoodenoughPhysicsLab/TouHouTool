@@ -1,8 +1,8 @@
-export module docs;
+#pragma once
 
-import <string_view>;
+#include <string_view>
 
-export namespace thtool::docs {
+namespace thtool::docs {
 
 constexpr ::std::string_view version{ "thtool version 0.0.0" };
 
@@ -19,3 +19,5 @@ explain:
 )"};
 
 }
+
+namespace tdocs = thtool::docs;

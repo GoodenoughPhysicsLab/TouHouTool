@@ -1,31 +1,17 @@
+#pragma once
+
 #include <csignal>
 
-export module main;
+#include "docs.hh"
+#include "mouse/mouse.hh"
+#include "prints.hh"
 
-import docs;
-import mouse;
-import prints;
+#include <cstdlib>
+#include <string_view>
 
-import <cstdlib>;
-import <string_view>;
+#include "fast_io/fast_io.h"
 
-import "fast_io/fast_io.h";
-
-namespace details {
-
-void thtool_exit(int signal) noexcept {
-	if (signal == SIGINT) {
-		::std::exit(0);
-	}
-}
-
-} // namespace detils
-
-export namespace thtool {
-
-void init() noexcept {
-	::std::signal(SIGINT, ::details::thtool_exit);
-}
+namespace thtool {
 
 void main_cmd(::std::string_view s) noexcept {
 	if (s == "mouse") {

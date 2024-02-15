@@ -16,4 +16,4 @@ add_executable(${CMAKE_PROJECT_NAME} ${SRC_FILES})
 
 add_compile_options(/GR-)
 
-target_compile_features(${CMAKE_PROJECT_NAME} PRIVATE cxx_std_23)
+target_compile_features(${CMAKE_PROJECT_NAME} PRIVATE cxx_std_20)

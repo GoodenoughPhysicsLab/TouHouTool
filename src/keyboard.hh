@@ -1,12 +1,12 @@
-#include <Windows.h>
+#pragma once
 
-export module keyboard;
+#include <Windows.h>
 
 namespace details {
 
-} // namespace details
+} // namespace detils
 
-export namespace thtool::keyboard {
+namespace thtool::keyboard {
 
 enum class Behavior : BYTE {
 	left = VK_LEFT,
@@ -24,3 +24,5 @@ void click(Behavior behavior) noexcept {
 }
 
 } // namespace thtool::keycoard
+
+namespace tkeyboard = thtool::keyboard;

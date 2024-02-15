@@ -1,10 +1,9 @@
-export module prints;
+#pragma once
 
-import <array>;
-import <string_view>;
-import <type_traits>;
+#include <string_view>
+#include <type_traits>
 
-import "fast_io/fast_io.h";
+#include "fast_io/fast_io.h"
 
 namespace details {
 
@@ -14,7 +13,7 @@ struct color_base {
 
 } //  details
 
-export namespace thtool::prints {
+namespace thtool::prints {
 
 struct black : ::details::color_base {
     static constexpr ::std::string_view color{"\033[30m"};
@@ -74,3 +73,5 @@ void error(Args&&... arg) noexcept
 }
 
 } // namespace thtool::prints
+
+namespace tprints = thtool::prints;

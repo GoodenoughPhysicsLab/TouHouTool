@@ -1,11 +1,11 @@
+#pragma once
+
 #include <Windows.h>
 #ifdef _DEBUG
 #	include "../fast_io/fast_io.h"
 #endif
 
-export module mouse;
-
-import keyboard;
+#include "../keyboard.hh"
 
 namespace details{
 
@@ -24,7 +24,7 @@ bool is_click(int vKey, bool& status) {
 
 } // namespace details
 
-export namespace thtool::mouse {
+namespace thtool::mouse {
 
 void main() noexcept {
 	bool status_X = false, is_click_X = true;

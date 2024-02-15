@@ -1,20 +1,30 @@
-#include <vcruntime.h> // _HAS_CXX23
+#include "define.hh"
 
-#if !defined(_MSC_VER) || !_HAS_CXX23
-#    error "do not use MSVC or do not use c++23"
+#if !defined(__cplusplus) || !defined(THTOOL_CPP20) || !defined(THTOOL_IS_WINDOWS)
+#    error "do not use C++20 or do not use windows"
 #endif
 
-import main;
-import prints;
-import keyboard;
+#include "main.hh"
+#include "prints.hh"
+#include "keyboard.hh"
 
-import <string_view>;
+#include <string_view>
 
-import "fast_io/fast_io.h";
+#include "fast_io/fast_io.h"
+
+namespace details {
+
+void thtool_exit(int signal) noexcept {
+	if (signal == SIGINT) {
+		::std::exit(0);
+	}
+}
+
+} // namespace detils
 
 int main(int argc, char **argv) noexcept
 {
-    thtool::init();
+    ::std::signal(SIGINT, ::details::thtool_exit);
 
     if (argc <= 1) {
         thtool::prints::error("thtool access no argument");

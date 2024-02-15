@@ -1,0 +1,1 @@
+cl src\thtool.cpp /std:c++20 /nologo /Ox
