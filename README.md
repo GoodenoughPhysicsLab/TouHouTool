@@ -10,5 +10,5 @@ you can also type `thtool help` to get help.
 
 # how to make
 Requires `c++20` on windows
-support: MSVC, [MinGW](https://github.com/24bit-xjkp/toolchains), [Clang](https://github.com/llvm/llvm-project/releases)
+support: MSVC, [GCC, clang](https://github.com/Mq-b/Loser-HomeWork/releases/tag/cppstuff)
 
