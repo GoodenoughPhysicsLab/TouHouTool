@@ -2,10 +2,6 @@
 
 #include <Windows.h>
 
-namespace details {
-
-} // namespace detils
-
 namespace thtool::keyboard {
 
 enum class Behavior : BYTE {
@@ -18,11 +14,9 @@ enum class Behavior : BYTE {
 	shift = VK_SHIFT
 };
 
-void click(Behavior behavior) noexcept {
+inline void click(Behavior behavior) noexcept {
 	keybd_event(static_cast<BYTE>(behavior), 0, 0, 0);
 	keybd_event(static_cast<BYTE>(behavior), 0, KEYEVENTF_KEYUP, 0);
 }
 
 } // namespace thtool::keycoard
-
-namespace tkeyboard = thtool::keyboard;

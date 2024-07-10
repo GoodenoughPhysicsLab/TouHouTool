@@ -28,7 +28,7 @@ namespace thtool::mouse {
 
 void main() noexcept {
 	bool status_X = false, is_click_X = true;
-	
+
 	while (true)
 	{
 		// Check if the button "X" has been clicked
