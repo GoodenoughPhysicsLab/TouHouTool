@@ -9,6 +9,10 @@ a tool of `TouHou Project`.
 you can also type `thtool help` to get help.
 
 # how to make
-Requires `c++20` on windows
-support: MSVC, [GCC, clang](https://github.com/Mq-b/Loser-HomeWork/releases/tag/cppstuff)
+Requires `c++20` on windows  
+support: MSVC, [GCC, clang](https://github.com/24bit-xjkp/toolchains/releases)  
 
+> build your non-ansi version
+```
+cmake -B build -DTHTOOL_CLOSE_COLOR_PRINT=on
+```
