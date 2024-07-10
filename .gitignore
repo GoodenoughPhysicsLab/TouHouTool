@@ -1,5 +1,8 @@
-/build
-/.vscode
+build/
+.vscode/
+dist/
+__pycache__/
+*.egg-info/
 
 # Prerequisites
 *.d
@@ -34,4 +37,5 @@
 *.out
 *.app
 
+*.pyd
 *.test.*

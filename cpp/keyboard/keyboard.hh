@@ -14,9 +14,8 @@ enum class Behavior : BYTE {
 	shift = VK_SHIFT
 };
 
-inline void click(Behavior behavior) noexcept {
-	keybd_event(static_cast<BYTE>(behavior), 0, 0, 0);
-	keybd_event(static_cast<BYTE>(behavior), 0, KEYEVENTF_KEYUP, 0);
+inline void send_behavior(Behavior behavior) noexcept {
+	//
 }
 
 } // namespace thtool::keycoard

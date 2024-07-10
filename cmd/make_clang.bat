@@ -1,1 +1,0 @@
-clang++ .\src\thtool.cpp -o thtool -Ofast -std=c++23 -fno-rtti -fno-exceptions
