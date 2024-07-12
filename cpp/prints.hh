@@ -22,12 +22,12 @@ inline void enable_win32_ansi() noexcept {
     ::std::uint_least32_t err_omode{};
     void* out_handle{};
     void* err_handle{};
-    out_handle = ::fast_io::win32::GetStdHandle(::fast_io::win32_stdout_number);
-    err_handle = ::fast_io::win32::GetStdHandle(::fast_io::win32_stderr_number);
-    ::fast_io::win32::GetConsoleMode(out_handle, &out_omode);
-    ::fast_io::win32::GetConsoleMode(err_handle, &err_omode);
-    ::fast_io::win32::SetConsoleMode(out_handle, out_omode | enable_virtual_terminal_processing);
-    ::fast_io::win32::SetConsoleMode(err_handle, err_omode | enable_virtual_terminal_processing);
+    out_handle = fast_io::win32::GetStdHandle(::fast_io::win32_stdout_number);
+    err_handle = fast_io::win32::GetStdHandle(::fast_io::win32_stderr_number);
+    fast_io::win32::GetConsoleMode(out_handle, &out_omode);
+    fast_io::win32::GetConsoleMode(err_handle, &err_omode);
+    fast_io::win32::SetConsoleMode(out_handle, out_omode | enable_virtual_terminal_processing);
+    fast_io::win32::SetConsoleMode(err_handle, err_omode | enable_virtual_terminal_processing);
 }
 
 struct black : ::details::color_base {

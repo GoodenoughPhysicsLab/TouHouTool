@@ -11,6 +11,7 @@ st.setup(
     url="",
     packages=["thtool"],
     ext_modules=[
-        st.Extension("thtool.keyboard", ["cpp/keyboard/impl.cc"], extra_compile_args=["/std:c++20"]),
+        st.Extension("thtool.window", ["cpp/window/impl.cc"],
+                     extra_compile_args=["/std:c++20"]),
     ]
 )
