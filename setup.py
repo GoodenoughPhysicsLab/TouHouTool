@@ -8,7 +8,8 @@ st.setup(
     description="tools for TouHou project",
     long_description="",
     long_description_content_type="text/markdown",
-    url="",
+    url="https://github.com/GoodenoughPhysicsLab/TouHouTool",
+    python_requires=">=3.7",
     packages=["thtool"],
     ext_modules=[
         st.Extension("thtool.window", ["cpp/window/impl.cc"],
