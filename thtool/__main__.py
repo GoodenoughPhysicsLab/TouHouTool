@@ -10,6 +10,7 @@ def main() -> None:
     parser.add_argument("--bind",
                         help="bind to window."
                             "[ --bind list ] print all windows' title; "
+                            "[ --bind list-guess ] print all guessed windows' title; "
                             "[ --bind foreground ] bind to foreground window; "
                             "[ --bind guess ] bind to a window thtool guess; "
                             "[ --bind <title> ] bind to a window with title <title>")
@@ -21,12 +22,14 @@ def main() -> None:
 
     if args.bind == "list":
         window.print_all_windows()
+    elif args.bind == "list-guess":
+        window.print_all_windows(only_guess=True)
     elif args.bind == "foreground":
-        window.set_hwnd_foreground()
-    # elif args.bind == "guess":
-    #     window.set_hwnd_guess()
-    # elif args.bind:
-    #     window.set_hwnd_title(args.bind)
+        window.bind_foreground()
+    elif args.bind == "guess":
+        window.bind_guess()
+    elif args.bind:
+        window.bind_title(args.bind)
 
 
 if __name__ == '__main__':
