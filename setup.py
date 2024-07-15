@@ -16,7 +16,8 @@ class CMakeBuild(build_ext):
             os.makedirs(self.build_temp)
         os.system(f"cmake -S cpp -B build "
                   f"-DPYTHON_EXECUTABLE={sys.executable} ")
-        os.system("cmake --build build --config Release")
+        os.system(f"cmake --build build "
+                  f"--config {'Debug' if os.environ.get('THTOOL_DEBUG') else 'Release'}")
 
         for root, _, files in os.walk("build"):
             if os.path.abspath(root) == extdir:

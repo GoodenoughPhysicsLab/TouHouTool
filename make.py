@@ -14,11 +14,26 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser("thtool(TouHouTool) build script")
     parser.add_argument("--debug", action="store_true", help="Build in debug mode")
+    parser.add_argument("--skip-cmake-setup", action="store_true", help="Skip cmake setup")
+
     args = parser.parse_args()
 
     for root, dirs, _ in os.walk(ROOT):
         for dir in dirs:
-            if dir == "build" or dir == "dist" or dir.endswith(".egg-info"):
+            if dir == "build":
+                if args.skip_cmake_setup:
+                    for root2, dirs2, _ in os.walk(os.path.join(root, dir)):
+                        for dir2 in dirs2:
+                            if dir2.startswith("lib.") or \
+                                dir2.startswith("bdist.") or \
+                                dir2.startswith("temp."):
+                                shutil.rmtree(os.path.join(root2, dir2))
+                        break
+
+                else:
+                    shutil.rmtree(os.path.join(root, dir))
+
+            if dir == "dist" or dir.endswith(".egg-info"):
                 shutil.rmtree(os.path.join(root, dir))
         break
 
@@ -35,15 +50,20 @@ if __name__ == "__main__":
     os.system("python -m pip install -U pip")
     os.system(f"python -m pip install -r requirements.txt")
 
+    if args.debug:
+        os.environ["THTOOL_DEBUG"] = "1"
     os.system(f"python -m build --wheel --sdist")
 
     for root, dirs, files in os.walk(os.path.join(ROOT, "build")):
         for dir in dirs:
             if dir.startswith("lib."):
                 for root2, _, files2 in os.walk(os.path.join(root, dir, "thtool")):
+                    copying_file_counter = 0
                     for file in files2:
                         if file.endswith(".pyd"):
                             shutil.copy(os.path.join(root2, file), os.path.join(ROOT, "thtool"))
                             print(f"Coping {file} -> thtool")
-                    break
+                            copying_file_counter += 1
+                    print(f"Copied {copying_file_counter} files")
+                    exit(0)
         break
