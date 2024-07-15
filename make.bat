@@ -13,7 +13,11 @@ if exist .\thtool\*.pyd (
     del .\thtool\*.pyd
 )
 
-..\venv\Scripts\python.exe -m build --wheel --sdist
+if not exist "cpp\pybind11" (
+    git clone https://github.com/pybind/pybind11.git cpp\pybind11 --depth=1
+)
+
+python -m build --wheel --sdist
 
 for /d /r "build" %%d in (lib.*) do (
     copy %%d\thtool\*.pyd .\thtool

@@ -12,7 +12,7 @@ def main() -> None:
                             "[ --bind list ] print all windows' title; "
                             "[ --bind list-guess ] print all guessed windows' title; "
                             "[ --bind foreground ] bind to foreground window; "
-                            "[ --bind guess ] bind to a window thtool guess; "
+                            "[ --bind guess ] bind to a window thtool guessed; "
                             "[ --bind <title> ] bind to a window with title <title>")
 
     args = parser.parse_args()
@@ -30,6 +30,10 @@ def main() -> None:
         window.bind_guess()
     elif args.bind:
         window.bind_title(args.bind)
+    else:
+        raise window.BindError("you must bind to a TouHou window")
+
+    # window.wrun()
 
 
 if __name__ == '__main__':

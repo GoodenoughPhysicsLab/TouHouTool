@@ -6,11 +6,16 @@ a tool of `TouHou Project`.
 * Play thxx game automatically.
 
 # how to use
-you can also type `thtool help` to get help.
+you can also type `python -m thtool --help` to get help.
 
-# how to make
+# make
 Requires `c++20` on windows  
 support: MSVC, [GCC, clang](https://github.com/24bit-xjkp/toolchains/releases)  
+
+```cmd
+.\make.bat
+```
+this will build all python excutable extension and copy them to the thtool.  
 
 > build your non-ansi version
 ```

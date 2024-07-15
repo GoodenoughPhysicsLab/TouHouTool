@@ -8,7 +8,7 @@
 #include <winscard.h>
 #include <winuser.h>
 #include "../fast_io/fast_io.h"
-#include "../pybind11/pybind11.h"
+#include <pybind11/pybind11.h>
 
 #pragma comment(lib, "user32.lib")
 
@@ -16,30 +16,7 @@ namespace py = pybind11;
 
 namespace thtool::details {
 
-const ::std::string_view th_titles[] = {
-#if 0
-    "Highly Responsive to Prayers",
-    "The Story of Eastern Wonderland",
-    "Phantasmagoria of Dim.Dream",
-    "Lotus Land Story",
-    "Mystic Square",
-#endif
-    "the Embodiment of Scarlet Devil",
-    "Perfect Cherry Blossom",
-    "Imperishable Night",
-    "Phantasmagoria of Flower View",
-    "Mountain of Faith",
-    "Subterranean Animism",
-    "Undefined Fantastic Object",
-    "Ten Desires",
-    "Double Dealing Character",
-    "Legacy of Lunatic Kingdom",
-    "Hidden Star in Four Seasons",
-    "Wily Beast and Weakest Creature",
-    "Reincarnation",
-};
-
-inline ::std::optional<::std::string> get_hwnd_title(HWND hwnd) noexcept {
+[[nodiscard]] inline ::std::optional<::std::string> get_hwnd_title(HWND hwnd) noexcept {
     char windowTitle[256];
     if (GetWindowTextA(hwnd, windowTitle, sizeof(windowTitle)) > 0) {
         return ::std::string(windowTitle);
@@ -48,7 +25,30 @@ inline ::std::optional<::std::string> get_hwnd_title(HWND hwnd) noexcept {
 }
 
 // return title if true else return nullopt
-inline ::std::optional<::std::string> guess_is_th_window(::std::string title) noexcept {
+[[nodiscard]] inline ::std::optional<::std::string> guess_is_th_window(::std::string title) noexcept {
+    const ::std::string_view th_titles[] = {
+#if 0
+        "Highly Responsive to Prayers",
+        "The Story of Eastern Wonderland",
+        "Phantasmagoria of Dim.Dream",
+        "Lotus Land Story",
+        "Mystic Square",
+#endif
+        "the Embodiment of Scarlet Devil",
+        "Perfect Cherry Blossom",
+        "Imperishable Night",
+        "Phantasmagoria of Flower View",
+        "Mountain of Faith",
+        "Subterranean Animism",
+        "Undefined Fantastic Object",
+        "Ten Desires",
+        "Double Dealing Character",
+        "Legacy of Lunatic Kingdom",
+        "Hidden Star in Four Seasons",
+        "Wily Beast and Weakest Creature",
+        "Reincarnation",
+    };
+
     for (auto th_title : th_titles) {
         if (title.find(th_title) != ::std::string::npos) {
             return title;
@@ -115,11 +115,9 @@ inline void bind_foreground() {
     }
     auto title_name = details::get_hwnd_title(TH_hwnd.value());
     if (!title_name.has_value()) {
-        // PyErr_SetString(PyExc_RuntimeError, "bind to foreground window fail");
-        // throw pybind11::error_already_set();
         throw BindError("bind to foreground window fail");
     }
-    fast_io::io::print("bind to foreground window: ", title_name.value());
+    fast_io::io::print("Successfully bind to foreground window: ", title_name.value());
 }
 
 } // namespace thtool::bind
@@ -134,7 +132,7 @@ extern "C" inline BOOL CALLBACK bind_guess_proc(HWND hwnd, LPARAM lParam) {
 
     if (guess_is_th_window(title.value())) {
         bind::TH_hwnd = hwnd;
-        fast_io::io::println("bind to guess window: ", title.value());
+        fast_io::io::println("Successfully bind to guessed window: ", title.value());
         return FALSE;
     }
     return TRUE;
@@ -156,7 +154,7 @@ inline void bind_title(py::str title) {
     if (TH_hwnd.value() == NULL) {
         throw BindError("no match window title");
     }
-    fast_io::io::println("bind to window: ", title.cast<::std::string>());
+    fast_io::io::println("Successfully bind to window: ", title.cast<::std::string>());
 }
 
 } // namespace thtool::bind

@@ -4,6 +4,8 @@ dist/
 __pycache__/
 *.egg-info/
 
+pybind11/
+
 # Prerequisites
 *.d
 
