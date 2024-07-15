@@ -19,12 +19,12 @@ class CMakeBuild(build_ext):
         os.system("cmake --build build --config Release")
 
         for root, _, files in os.walk("build"):
+            if os.path.abspath(root) == extdir:
+                continue
+
             for file in files:
-                try:
-                    if file.endswith(".pyd"):
-                        shutil.copy(os.path.join(root, file), extdir)
-                except shutil.SameFileError:
-                    pass
+                if file.endswith(".pyd"):
+                    shutil.copy(os.path.join(root, file), extdir)
 
 st.setup(
     name="thtool",

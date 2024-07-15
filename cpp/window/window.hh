@@ -6,7 +6,6 @@
 #include <windef.h>
 #include <winuser.h>
 #include <gdiplus.h>
-#include <opencv2/opencv.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include "bind.hh"
@@ -18,7 +17,35 @@ namespace py = pybind11;
 
 namespace thtool::details {
 
+inline ULONG_PTR gdiplusToken;
 
+inline BOOL GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
+    UINT num = 0, size = 0;
+    Gdiplus::ImageCodecInfo* pImageCodecInfo = NULL;
+
+    Gdiplus::GetImageEncodersSize(&num, &size);
+    if (size == 0) {
+        return FALSE;
+    }
+
+    pImageCodecInfo = (Gdiplus::ImageCodecInfo*)malloc(size);
+    if (pImageCodecInfo == NULL) {
+        return FALSE;
+    }
+
+    GetImageEncoders(num, size, pImageCodecInfo);
+
+    for (UINT j = 0; j < num; ++j) {
+        if (wcscmp(pImageCodecInfo[j].MimeType, format) == 0) {
+            *pClsid = pImageCodecInfo[j].Clsid;
+            free(pImageCodecInfo);
+            return TRUE;
+        }
+    }
+
+    free(pImageCodecInfo);
+    return FALSE;
+}
 
 } // namespace thtool::details
 
@@ -48,7 +75,7 @@ namespace thtool::window {
     return res;
 }
 
-inline py::array_t<uint8_t> get_scene() {
+inline py::array_t<uint8_t> get_scene() { // TODO
     auto screen = get_size();
 
     // init
@@ -66,15 +93,16 @@ inline py::array_t<uint8_t> get_scene() {
         hScreenDC, 0, 0, SRCCOPY);
     Gdiplus::Bitmap bitmap(hBitmap, NULL);
 
-    ::std::size_t size = screen.width * screen.height * 4;
-    std::unique_ptr<uint8_t[]> buffer(new uint8_t[size]);
+    ::std::size_t res_size = screen.width * screen.height * 4;
+    py::array_t<uint8_t> res(res_size);
 
+    // lock bitmap
     Gdiplus::Rect rect(0, 0, screen.width, screen.height);
     Gdiplus::BitmapData bitmapData;
-    bitmap.LockBits(&rect, Gdiplus::ImageLockModeRead,
+    auto status = bitmap.LockBits(&rect, Gdiplus::ImageLockModeRead,
                     PixelFormat24bppRGB, &bitmapData);
 
-    memcpy(buffer.get(), bitmapData.Scan0, size);
+    memcpy(res.mutable_data(0), bitmapData.Scan0, res_size);
 
     bitmap.UnlockBits(&bitmapData);
 
@@ -85,7 +113,37 @@ inline py::array_t<uint8_t> get_scene() {
     ReleaseDC(NULL, hScreenDC);
     Gdiplus::GdiplusShutdown(gdiplusToken);
 
-    py::array_t<uint8_t> result({screen.height, screen.width, 4}, buffer.release());
+    return res;
+}
+
+inline void init_Gdiplus() {
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    GdiplusStartup(&details::gdiplusToken, &gdiplusStartupInput, NULL);
+}
+
+inline void save_scene_img() {
+    auto [width, height] = get_size();
+
+    HDC hScreenDC = GetDC(thtool::bind::TH_hwnd.value());
+    HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
+    HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
+    HGDIOBJ old_obj = SelectObject(hMemoryDC, hBitmap);
+    BitBlt(hMemoryDC, 0, 0, width, height, hScreenDC, 0, 0, SRCCOPY);
+
+    CLSID clsid;
+    details::GetEncoderClsid(L"image/bmp", &clsid);
+
+    Gdiplus::Bitmap bitmap(hBitmap, NULL);
+    bitmap.Save(L"C:\\Windows\\Temp\\thtemp.bmp", &clsid, NULL);
+
+    SelectObject(hMemoryDC, old_obj);
+    DeleteObject(hBitmap);
+    DeleteDC(hMemoryDC);
+    ReleaseDC(NULL, hScreenDC);
+}
+
+inline void free_Gdiplus() {
+    Gdiplus::GdiplusShutdown(details::gdiplusToken);
 }
 
 } // namespace thtool::window

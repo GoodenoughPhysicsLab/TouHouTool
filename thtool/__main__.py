@@ -1,5 +1,5 @@
 import argparse
-
+import cv2
 from . import window
 
 def main() -> None:
@@ -33,7 +33,13 @@ def main() -> None:
     else:
         raise window.BindError("you must bind to a TouHou window")
 
-    # window.wrun()
+    window.init_Gdiplus()
+    try:
+        while True:
+            window.save_scene_img()
+            img = cv2.imread("C:/Windows/Temp/thtemp.bmp")
+    finally:
+        window.free_Gdiplus()
 
 
 if __name__ == '__main__':

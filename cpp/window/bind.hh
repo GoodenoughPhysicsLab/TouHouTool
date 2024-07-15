@@ -46,7 +46,7 @@ namespace thtool::details {
         "Legacy of Lunatic Kingdom",
         "Hidden Star in Four Seasons",
         "Wily Beast and Weakest Creature",
-        "Reincarnation",
+        "Unconnected Marketeers",
     };
 
     for (auto th_title : th_titles) {

@@ -40,4 +40,5 @@ pybind11/
 *.app
 
 *.pyd
+*.bmp
 *.test.*
