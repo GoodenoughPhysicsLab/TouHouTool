@@ -1,6 +1,8 @@
 import argparse
 import cv2
 from . import window
+from . import kb_control
+from . import scene
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="thtool(TouHouTool) : tools for TouHou project")
@@ -36,9 +38,13 @@ def main() -> None:
     window.init_Gdiplus()
     try:
         while True:
-            window.save_scene_img()
-            img = cv2.imread("C:/Windows/Temp/thtemp.bmp")
+            img = scene.get_scene()
+            print(kb_control.Behavior.shoot)
+            kb_control.send(kb_control.Behavior.shoot)
+    except window.BindError: # window closed
+        exit(0)
     finally:
+        cv2.destroyAllWindows()
         window.free_Gdiplus()
 
 

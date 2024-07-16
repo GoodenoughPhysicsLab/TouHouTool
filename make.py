@@ -47,9 +47,6 @@ if __name__ == "__main__":
         not os.path.isdir(os.path.join(ROOT, "cpp/pybind11")):
         os.system("git clone https://github.com/pybind/pybind11.git cpp/pybind11 --depth=1")
 
-    os.system("python -m pip install -U pip")
-    os.system(f"python -m pip install -r requirements.txt")
-
     if args.debug:
         os.environ["THTOOL_DEBUG"] = "1"
     os.system(f"python -m build --wheel --sdist")
@@ -64,6 +61,6 @@ if __name__ == "__main__":
                             shutil.copy(os.path.join(root2, file), os.path.join(ROOT, "thtool"))
                             print(f"Coping {file} -> thtool")
                             copying_file_counter += 1
-                    print(f"Copied {copying_file_counter} files")
+                    print(f"{copying_file_counter} successed, {3 - copying_file_counter} failed")
                     exit(0)
         break

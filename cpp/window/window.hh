@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
 #include <Windows.h>
 #include <windef.h>
@@ -75,6 +74,8 @@ namespace thtool::window {
     return res;
 }
 
+#if 0
+// return the screen scene instead of saving image
 inline py::array_t<uint8_t> get_scene() { // TODO
     auto screen = get_size();
 
@@ -115,6 +116,7 @@ inline py::array_t<uint8_t> get_scene() { // TODO
 
     return res;
 }
+#endif
 
 inline void init_Gdiplus() {
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
@@ -125,6 +127,9 @@ inline void save_scene_img() {
     auto [width, height] = get_size();
 
     HDC hScreenDC = GetDC(thtool::bind::TH_hwnd.value());
+    if (hScreenDC == NULL) {
+        throw bind::BindError("invalid handle");
+    }
     HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
     HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
     HGDIOBJ old_obj = SelectObject(hMemoryDC, hBitmap);
