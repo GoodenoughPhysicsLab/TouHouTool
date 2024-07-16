@@ -47,6 +47,10 @@ if __name__ == "__main__":
         not os.path.isdir(os.path.join(ROOT, "cpp/pybind11")):
         os.system("git clone https://github.com/pybind/pybind11.git cpp/pybind11 --depth=1")
 
+    if not os.path.exists(os.path.join(ROOT, "cpp/pybind11")) and \
+         not os.path.isdir(os.path.join(ROOT, "cpp/pybind11")):
+        raise RuntimeError("clone pybind11 fail")
+
     if args.debug:
         os.environ["THTOOL_DEBUG"] = "1"
     os.system(f"python -m build --wheel --sdist")
