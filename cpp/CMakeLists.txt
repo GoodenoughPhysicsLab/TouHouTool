@@ -8,4 +8,3 @@ add_subdirectory(pybind11)
 
 add_subdirectory(default-print)
 add_subdirectory(window)
-add_subdirectory(kb_control)

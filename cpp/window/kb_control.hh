@@ -5,7 +5,7 @@
 #include <minwindef.h>
 #include <winnt.h>
 #include <winuser.h>
-#include "../window/bind.hh"
+#include "bind.hh"
 
 #pragma comment(lib, "user32.lib")
 
@@ -22,8 +22,9 @@ enum class Behavior : BYTE {
 };
 
 inline void send(Behavior behavior) {
-	SendMessage(thtool::bind::TH_hwnd.value(), WM_KEYDOWN, static_cast<WPARAM>(behavior), 0);
-	SendMessage(thtool::bind::TH_hwnd.value(), WM_KEYUP, static_cast<WPARAM>(behavior), 0);
+	SetForegroundWindow(bind::TH_hwnd.value());
+	SendMessage(bind::TH_hwnd.value(), WM_KEYDOWN, static_cast<WPARAM>(behavior), 0);
+	SendMessage(bind::TH_hwnd.value(), WM_KEYUP, static_cast<WPARAM>(behavior), 0);
 }
 
 } // namespace thtool::kb_control

@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <string_view>
 #include <windef.h>
+#include <winnt.h>
 #include <winscard.h>
 #include <winuser.h>
 #include "../fast_io/fast_io.h"
@@ -117,7 +118,7 @@ inline void bind_foreground() {
     if (!title_name.has_value()) {
         throw BindError("bind to foreground window fail");
     }
-    fast_io::io::print("Successfully bind to foreground window: ", title_name.value());
+    PyObject_Print(PyUnicode_FromFormat("Successfully bind to foreground window: %s\n", title_name.value().c_str()), stdout, Py_PRINT_RAW);
 }
 
 } // namespace thtool::bind
@@ -132,7 +133,7 @@ extern "C" inline BOOL CALLBACK bind_guess_proc(HWND hwnd, LPARAM lParam) {
 
     if (guess_is_th_window(title.value())) {
         bind::TH_hwnd = hwnd;
-        fast_io::io::println("Successfully bind to guessed window: ", title.value());
+        PyObject_Print(PyUnicode_FromFormat("Successfully bind to guessed window: %s\n", title.value().c_str()), stdout, Py_PRINT_RAW);
         return FALSE;
     }
     return TRUE;
@@ -154,7 +155,7 @@ inline void bind_title(py::str title) {
     if (TH_hwnd.value() == NULL) {
         throw BindError("no match window title");
     }
-    fast_io::io::println("Successfully bind to window: ", title.cast<::std::string>());
+    PyObject_Print(PyUnicode_FromFormat("Successfully bind to window: %s\n", title.cast<::std::string>().c_str()), stdout, Py_PRINT_RAW);
 }
 
 } // namespace thtool::bind

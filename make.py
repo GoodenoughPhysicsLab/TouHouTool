@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     if not os.path.exists(os.path.join(ROOT, "cpp/pybind11")) and \
          not os.path.isdir(os.path.join(ROOT, "cpp/pybind11")):
-        raise RuntimeError("clone pybind11 fail")
+        raise RuntimeError("download pybind11 fail")
 
     if args.debug:
         os.environ["THTOOL_DEBUG"] = "1"
@@ -65,6 +65,6 @@ if __name__ == "__main__":
                             shutil.copy(os.path.join(root2, file), os.path.join(ROOT, "thtool"))
                             print(f"Coping {file} -> thtool")
                             copying_file_counter += 1
-                    print(f"{copying_file_counter} successed, {3 - copying_file_counter} failed")
+                    print(f"{copying_file_counter} successed, {2 - copying_file_counter} failed")
                     exit(0)
         break

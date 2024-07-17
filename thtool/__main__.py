@@ -1,7 +1,6 @@
 import argparse
 import cv2
 from . import window
-from . import kb_control
 from . import scene
 
 def main() -> None:
@@ -24,8 +23,10 @@ def main() -> None:
 
     if args.bind == "list":
         window.print_all_windows()
+        exit(0)
     elif args.bind == "list-guess":
         window.print_all_windows(only_guess=True)
+        exit(0)
     elif args.bind == "foreground":
         window.bind_foreground()
     elif args.bind == "guess":
@@ -39,9 +40,9 @@ def main() -> None:
     try:
         while True:
             img = scene.get_scene()
-            print(kb_control.Behavior.shoot)
-            kb_control.send(kb_control.Behavior.shoot)
+            window.send(window.Behavior.shoot)
     except window.BindError: # window closed
+        print("Find touhou window closed")
         exit(0)
     finally:
         cv2.destroyAllWindows()

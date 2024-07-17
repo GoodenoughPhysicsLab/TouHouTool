@@ -13,6 +13,13 @@ Requires `c++20` on windows
 
 support: MSVC, [GCC, clang](https://github.com/24bit-xjkp/toolchains/releases)
 
+> install dependencies:
+```cmd
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+> build release version:
 ```cmd
 python .\make.py
 ```

@@ -6,7 +6,6 @@
 #include <winuser.h>
 #include <gdiplus.h>
 #include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
 #include "bind.hh"
 
 #pragma comment (lib,"gdiplus.lib")
