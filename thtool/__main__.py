@@ -1,7 +1,9 @@
+import time
 import argparse
 import cv2
 from . import window
 from . import scene
+from . import kb_control
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="thtool(TouHouTool) : tools for TouHou project")
@@ -40,7 +42,8 @@ def main() -> None:
     try:
         while True:
             img = scene.get_scene()
-            window.send(window.Behavior.shoot)
+            kb_control.send(kb_control.Behavior.shoot)
+            time.sleep(1)
     except window.BindError: # window closed
         print("Find touhou window closed")
         exit(0)
@@ -53,6 +56,6 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print("Keyborad interrupt!")
+        print("Keyboard interrupt!")
 else:
     raise RuntimeError("This file is not intended to be imported!")

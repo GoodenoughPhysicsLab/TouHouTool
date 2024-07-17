@@ -150,4 +150,8 @@ inline void free_Gdiplus() {
     Gdiplus::GdiplusShutdown(details::gdiplusToken);
 }
 
+inline bool is_foreground_window() {
+    return bind::TH_hwnd.value() == GetForegroundWindow();
+}
+
 } // namespace thtool::window

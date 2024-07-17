@@ -38,6 +38,7 @@ st.setup(
     url="https://github.com/GoodenoughPhysicsLab/TouHouTool",
     python_requires=">=3.7",
     packages=["thtool"],
+    install_requires=["pynput", "opencv-python"],
     cmdclass={
         "build_ext": CMakeBuild,
     },
