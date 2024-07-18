@@ -5,6 +5,7 @@ __pycache__/
 *.egg-info/
 
 pybind11/
+fast_io/
 
 # Prerequisites
 *.d

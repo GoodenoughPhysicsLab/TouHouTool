@@ -51,6 +51,16 @@ if __name__ == "__main__":
          not os.path.isdir(os.path.join(ROOT, "cpp/pybind11")):
         raise RuntimeError("download pybind11 fail")
 
+    if not os.path.exists(os.path.join(ROOT, "cpp/fast_io")) and \
+         not os.path.isdir(os.path.join(ROOT, "cpp/fast_io")):
+        os.system("git clone -b next --single-branch https://github.com/cppfastio/fast_io.git --depth=1")
+        shutil.move(os.path.join(ROOT, "fast_io", "include"), os.path.join(ROOT, "cpp", "fast_io"))
+        os.system("rd /s /q fast_io") # shutil.rmtree has PermisionError
+
+    if not os.path.exists(os.path.join(ROOT, "cpp/fast_io")) and \
+         not os.path.isdir(os.path.join(ROOT, "cpp/fast_io")):
+        raise RuntimeError("download fast_io fail")
+
     if args.debug:
         os.environ["THTOOL_DEBUG"] = "1"
     os.system(f"python -m build --wheel --sdist")
