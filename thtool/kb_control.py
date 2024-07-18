@@ -13,7 +13,8 @@ class Behavior(Enum):
     down = pynput.keyboard.Key.down
     bomb = 'x'
     shoot = 'z'
-    shift = pynput.keyboard.Key.shift
+    shift = pynput.keyboard.Key.shift # change move speed
+    ctrl = pynput.keyboard.Key.ctrl # escape communication
 
 class _Behavior_list:
     __lst: list = []
@@ -26,8 +27,6 @@ class _Behavior_list:
     def push(cls, behavior: Behavior, press_time: int, delta_time: int) -> None:
         for i, (_behavior, _press_time, _delta_time) in enumerate(cls.__lst):
             if behavior == _behavior:
-                # cls.__lst[i] = (behavior, _press_time, delta_time + press_time - _press_time)
-                # => (_deltatime + deltatime) - (_presstime + _deltatime - press_time)
                 cls.__lst[i] = (behavior, press_time, delta_time)
                 return
         cls.__lst.append((behavior, press_time, delta_time))

@@ -1,6 +1,7 @@
 import time
 import argparse
 import cv2
+from . import prints
 from . import window
 from . import scene
 from . import kb_control
@@ -42,7 +43,7 @@ def main() -> None:
     try:
         while True:
             img = scene.get_scene()
-            kb_control.send(kb_control.Behavior.shoot)
+            kb_control.send(kb_control.Behavior.bomb)
             time.sleep(1)
     except window.BindError: # window closed
         print("Find touhou window closed")
@@ -54,6 +55,7 @@ def main() -> None:
 
 if __name__ == '__main__':
     try:
+        prints.enable_win32_ansi()
         main()
     except KeyboardInterrupt:
         print("Keyboard interrupt!")

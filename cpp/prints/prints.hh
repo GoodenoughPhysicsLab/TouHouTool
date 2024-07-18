@@ -9,6 +9,11 @@ struct color_base {
     static constexpr ::std::string_view color_end{"\033[39m"};
 };
 
+constexpr ::std::uint_least32_t utf8_coding{65001u};  // utf8
+
+static ::std::uint_least32_t output{};
+static ::std::uint_least32_t input{};
+
 } //  details
 
 namespace thtool::prints {
@@ -30,42 +35,34 @@ inline void enable_win32_ansi() noexcept {
     fast_io::win32::SetConsoleMode(err_handle, err_omode | enable_virtual_terminal_processing);
 }
 
-// #if __has_cpp_attribute(__gnu__::__cold__)
-//     [[__gnu__::__cold__]]
-// #endif
-// inline void
-
 // https://learn.microsoft.com/en-us/windows/win32/intl/code-page-identifiers
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+inline void set_win32_console_io_cp_to_utf8() noexcept {
+    details::output = ::fast_io::win32::GetConsoleOutputCP();
+    details::input = ::fast_io::win32::GetConsoleCP();
+    if (details::output != details::utf8_coding) {
+        ::fast_io::win32::SetConsoleOutputCP(details::utf8_coding);
+    }
+    if (details::input != details::utf8_coding) {
+        ::fast_io::win32::SetConsoleCP(details::utf8_coding);
+    }
+}
 
-    struct set_win32_console_io_cp_to_utf8
+#if __has_cpp_attribute(__gnu__::__cold__)
+    [[__gnu__::__cold__]]
+#endif
+inline void cancle_set_win32_console_io_cp_to_utf8() {
     {
-        inline static constexpr ::std::uint_least32_t utf8_coding{65001u};  // utf8
-
-        ::std::uint_least32_t output{};
-        ::std::uint_least32_t input{};
-
-#if __has_cpp_attribute(__gnu__::__cold__)
-        [[__gnu__::__cold__]]
-#endif
-        set_win32_console_io_cp_to_utf8() noexcept
-        {
-            output = ::fast_io::win32::GetConsoleOutputCP();
-            input = ::fast_io::win32::GetConsoleCP();
-            if(output != utf8_coding) { ::fast_io::win32::SetConsoleOutputCP(utf8_coding); }
-            if(input != utf8_coding) { ::fast_io::win32::SetConsoleCP(utf8_coding); }
+        if (details::output != details::utf8_coding) {
+            ::fast_io::win32::SetConsoleOutputCP(details::output);
         }
-
-#if __has_cpp_attribute(__gnu__::__cold__)
-        [[__gnu__::__cold__]]
-#endif
-        ~set_win32_console_io_cp_to_utf8()
-        {
-            if(output != utf8_coding) { ::fast_io::win32::SetConsoleOutputCP(output); }
-            if(input != utf8_coding) { ::fast_io::win32::SetConsoleCP(input); }
+        if (details::input != details::utf8_coding) {
+            ::fast_io::win32::SetConsoleCP(details::input);
         }
-    };
-
-
+    }
+}
 
 
 struct black : ::details::color_base {
