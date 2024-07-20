@@ -9,6 +9,7 @@
 #include <winscard.h>
 #include <winuser.h>
 #include "../fast_io/fast_io.h"
+#include "../fast_io/fast_io_dsal/string_view.h"
 #include <pybind11/pybind11.h>
 
 #pragma comment(lib, "user32.lib")
@@ -88,11 +89,12 @@ extern "C" inline BOOL CALLBACK print_all_windows_proc_only_guess(HWND hwnd, LPA
 namespace thtool::bind {
 
 class BindError : public ::std::exception {
-    ::std::string_view err_msg;
+    fast_io::string_view err_msg;
 public:
-    BindError(::std::string_view msg) {
-        this->err_msg = msg.data();
+    BindError(fast_io::string_view msg) {
+        this->err_msg = msg;
     }
+
     ~BindError() = default;
 
     const char* what() const noexcept override {

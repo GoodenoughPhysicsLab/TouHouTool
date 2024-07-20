@@ -8,3 +8,4 @@ add_subdirectory(pybind11)
 
 add_subdirectory(prints)
 add_subdirectory(window)
+add_subdirectory(obj)

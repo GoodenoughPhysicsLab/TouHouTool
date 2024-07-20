@@ -1,11 +1,13 @@
 #include "bind.hh"
 #include "window.hh"
+#include "readmem/th10_fsl.hh"
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(window, m) {
     py::register_exception<thtool::bind::BindError>(m, "BindError");
+    py::register_exception<thtool::readmem::GameNotStartError>(m, "GameNotStartError");
 
     m.def("print_all_windows", thtool::bind::print_all_windows, py::arg("only_guess")=false);
     m.def("bind_foreground", thtool::bind::bind_foreground);
@@ -16,4 +18,6 @@ PYBIND11_MODULE(window, m) {
     m.def("free_Gdiplus", thtool::window::free_Gdiplus);
     m.def("save_scene_img", thtool::window::save_scene_img);
     m.def("is_foreground_window", thtool::window::is_foreground_window);
+
+    m.def("fsl_get_player", thtool::readmem::fsl_get_player);
 }

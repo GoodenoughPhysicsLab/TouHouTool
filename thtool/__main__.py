@@ -43,8 +43,8 @@ def main() -> None:
     try:
         while True:
             img = scene.get_scene()
-            kb_control.send(kb_control.Behavior.bomb)
-            time.sleep(1)
+            # kb_control.send(kb_control.Behavior.bomb)
+            # time.sleep(1)
     except window.BindError: # window closed
         print("Find touhou window closed")
         exit(0)
