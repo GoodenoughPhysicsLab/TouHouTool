@@ -10,7 +10,6 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="thtool(TouHouTool) : tools for TouHou project")
 
     parser.add_argument("--version", action="store_true", help="show version")
-
     parser.add_argument("--bind",
                         help="bind to window."
                             "[ --bind list ] print all windows' title; "
@@ -18,18 +17,20 @@ def main() -> None:
                             "[ --bind foreground ] bind to foreground window; "
                             "[ --bind guess ] bind to a window thtool guessed; "
                             "[ --bind <title> ] bind to a window with title <title>")
+    parser.add_argument("--always-shoot", action="store_true", help="player always shoot without pressing 'z'")
 
     args = parser.parse_args()
 
     if args.version:
         print("thtool(TouHouTool) v0.0.0")
+        return
 
     if args.bind == "list":
         window.print_all_windows()
-        exit(0)
+        return
     elif args.bind == "list-guess":
         window.print_all_windows(only_guess=True)
-        exit(0)
+        return
     elif args.bind == "foreground":
         window.bind_foreground()
     elif args.bind == "guess":
@@ -39,10 +40,15 @@ def main() -> None:
     else:
         raise window.BindError("you must bind to a TouHou window")
 
+    if args.always_shoot:
+        kb_control.send(kb_control.Behavior.shoot, deltatime=10000, in_queue=True) # test bug
+
     window.init_Gdiplus()
     try:
         while True:
+            kb_control.do_if_checkout_foreground()
             img = scene.get_scene()
+            # print(scene.get_player())
             # kb_control.send(kb_control.Behavior.bomb)
             # time.sleep(1)
     except window.BindError: # window closed

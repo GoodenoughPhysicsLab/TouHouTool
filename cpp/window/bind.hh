@@ -10,6 +10,8 @@
 #include <winuser.h>
 #include "../fast_io/fast_io.h"
 #include "../fast_io/fast_io_dsal/string_view.h"
+#include "pybind11/pytypes.h"
+#include <Python.h>
 #include <pybind11/pybind11.h>
 
 #pragma comment(lib, "user32.lib")

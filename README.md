@@ -11,9 +11,11 @@ you can also type `python -m thtool --help` to get help.
 # make
 Requires `c++20` on windows
 
-support: MSVC, [GCC, clang](https://github.com/24bit-xjkp/toolchains/releases)
+support: MSVC, [g++, clang++](https://github.com/24bit-xjkp/toolchains/releases)
 
-> install dependencies:
+for `g++` or `clang++` user, requires [gnu make for windows](https://ftp.gnu.org/gnu/make/)(download make-\<version\>.tar.gz, unpack it and run `build_w32.bat`, then you can use `WinRel\gunmake.exe` to run makefile on windows)
+
+> install build dependencies:
 ```cmd
 python -m pip install --upgrade pip
 pip install -r requirements.txt

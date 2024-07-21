@@ -4,10 +4,6 @@ import shutil
 import setuptools as st
 from setuptools.command.build_ext import build_ext
 
-class THExtension(st.Extension):
-    def __init__(self, name, sources):
-        super().__init__(name, sources)
-
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
@@ -19,6 +15,7 @@ class CMakeBuild(build_ext):
         os.system(f"cmake --build build "
                   f"--config {'Debug' if os.environ.get('THTOOL_DEBUG') else 'Release'}")
 
+        # copy file from build to thtool
         for root, _, files in os.walk("build"):
             if os.path.abspath(root) == extdir:
                 continue
@@ -42,8 +39,10 @@ st.setup(
     cmdclass={
         "build_ext": CMakeBuild,
     },
+    # because I use cmake, so there is no need to write ext_modules
     ext_modules=[
-        THExtension("thtool.window", ["cpp/window/impl.cc"]),
-        THExtension("thtool.default_print", ["cpp/default_print/impl.cc"]),
-    ],
+        # just write one, then setup.py will use cmake to build all ext_modules
+        # build rule in cpp/CMakeLists.txt
+        st.Extension("thtool.window", sources=["cpp/window/impl.cc"])
+    ]
 )

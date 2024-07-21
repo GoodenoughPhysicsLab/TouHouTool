@@ -75,6 +75,9 @@ if __name__ == "__main__":
                             shutil.copy(os.path.join(root2, file), os.path.join(ROOT, "thtool"))
                             print(f"Coping {file} -> thtool")
                             copying_file_counter += 1
-                    print(f"{copying_file_counter} successed, {3 - copying_file_counter} failed")
+                    fail_files = 3 - copying_file_counter
+                    print(f"{copying_file_counter} successed, {fail_files} failed")
+                    if fail_files > 0:
+                        raise RuntimeError(f"{fail_files} cpp extensions build failed")
                     exit(0)
-        break
+        raise RuntimeError("all cpp extensions build failed, please bug report")

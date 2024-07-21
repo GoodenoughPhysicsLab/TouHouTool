@@ -21,8 +21,12 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install cibuildwheel
 
-      - name: Simple Build
-        run: python make.py
+      - name: Simple Build and test
+        run: |
+          python make.py
+          python -m thtool --version
+          python make.py --debug
+          python -m thtool --version
 
       - name: cibuildwheel
         run: python -m cibuildwheel --output-dir wheelhouse

@@ -27,15 +27,15 @@ inline py::tuple fsl_get_player() {
     ReadProcessMemory(details::get_process_handle(),
                       reinterpret_cast<LPCVOID>(obj_base + 0x3C0),
                       &x,
-                      4,
+                      SIZE_T(4),
                       &nbr);
     ReadProcessMemory(details::get_process_handle(),
                       reinterpret_cast<LPCVOID>(obj_base + 0x3C4),
                       &y,
-                      4,
+                      SIZE_T(4),
                       &nbr);
 
     return py::make_tuple(x, y);
 }
 
-}
+} // namespace thtool::readmem
