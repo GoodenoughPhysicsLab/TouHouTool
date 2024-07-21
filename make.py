@@ -25,8 +25,8 @@ if __name__ == "__main__":
                     for root2, dirs2, _ in os.walk(os.path.join(root, dir)):
                         for dir2 in dirs2:
                             if dir2.startswith("lib.") or \
-                                dir2.startswith("bdist.") or \
-                                dir2.startswith("temp."):
+                                    dir2.startswith("bdist.") or \
+                                    dir2.startswith("temp."):
                                 shutil.rmtree(os.path.join(root2, dir2))
                         break
 

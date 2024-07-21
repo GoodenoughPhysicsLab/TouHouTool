@@ -41,7 +41,7 @@ def main() -> None:
         raise window.BindError("you must bind to a TouHou window")
 
     if args.always_shoot:
-        kb_control.send(kb_control.Behavior.shoot, deltatime=10000, in_queue=True) # test bug
+        kb_control.send(kb_control.Behavior.shoot, deltatime=None, in_queue=True)
 
     window.init_Gdiplus()
     try:

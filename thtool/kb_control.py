@@ -1,7 +1,7 @@
 import time
 import pynput
 from enum import Enum, unique
-from typing import Type, Optional, Union
+from typing import Type, Optional, Union, List
 from . import window
 
 __all__ = ["Behavior", "send"]
@@ -45,7 +45,7 @@ class _Behavior_list:
                 new_list.append((behavior, press_time, delta_time))
         cls._lst = new_list
 
-_send_queue: list = []
+_send_queue: List[tuple] = [] # tuple: (behavior, delta_time)
 def send(behavior: Behavior, deltatime: Optional[Union[int, float]] = 1000, in_queue: bool = False) -> None:
     ''' send a behavior to TouHou window
         @param behavior: the behavior to send
@@ -64,33 +64,58 @@ def send(behavior: Behavior, deltatime: Optional[Union[int, float]] = 1000, in_q
         _Behavior_list.push(behavior, time.time() * 1000, deltatime)
     elif in_queue:
         _send_queue.append((behavior, deltatime))
-    _Behavior_list.release()
 
 _last_is_foreground: Optional[bool] = None
-_time_checkout_to_other: float = 0.
+_the_time_checkout_to_other: float = 0.
 def do_if_checkout_foreground() -> None:
     ''' when touhou game is not in foreground, stop sending behaviors
+
         otherwise, send behaviors in _Behavior_list
+
+        this function must run in the main loop
+
+        I assume that you type the cmd, then checkout to touhou window
     '''
-    global _last_is_foreground, _time_checkout_to_other, _send_queue
-
-    # just stimulate send behaviors in queue
-    if len(_send_queue) > 0:
-        send(*_send_queue[0])
-
+    global _last_is_foreground, _the_time_checkout_to_other, _send_queue
     current_is_foreground: bool = window.is_foreground()
+
+    # just for release in time
+    _Behavior_list.release()
+
     if current_is_foreground == _last_is_foreground:
         return
 
+    if current_is_foreground is False and _last_is_foreground is None:
+        if not _the_time_checkout_to_other:
+            _the_time_checkout_to_other = time.time() * 1000
+        return
+
     if current_is_foreground: # checkout touhou window to foreground
-        if not _time_checkout_to_other:
-            return
+        # if _last_is_foreground is None:
+        #     return
 
         for i, (behavior, press_time, delta_time) in enumerate(_Behavior_list._lst):
-            _Behavior_list._lst[i] = \
-                (behavior, press_time,
-                delta_time + time.time() * 1000 - _time_checkout_to_other
-                    if delta_time is not None else None)
+            _Behavior_list._lst[i] = (behavior, press_time,
+                delta_time + time.time() * 1000 - _the_time_checkout_to_other
+                if delta_time is not None else None)
+            _Behavior_list._keyboard.press(behavior.value)
+
+        while len(_send_queue) > 0:
+            temp = _send_queue.pop(0)
+            _Behavior_list.push(temp[0], time.time() * 1000, temp[1])
+
+        _last_is_foreground = current_is_foreground
+
     else:
-        _time_checkout_to_other = time.time() * 1000
-    _last_is_foreground = current_is_foreground
+        _the_time_checkout_to_other = time.time() * 1000
+        for behavior, press_time, delta_time in _Behavior_list._lst:
+            _Behavior_list._keyboard.release(behavior.value)
+            _send_queue.append(
+                (behavior, delta_time - (time.time() * 1000 - press_time) if delta_time is not None else None)
+            )
+        _Behavior_list._lst = []
+
+        _last_is_foreground = current_is_foreground
+
+    # if _last_is_foreground is not None:
+    #     _last_is_foreground = current_is_foreground
