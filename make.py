@@ -15,6 +15,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser("thtool(TouHouTool) build script")
     parser.add_argument("--debug", action="store_true", help="Build in debug mode")
     parser.add_argument("--skip-cmake-setup", action="store_true", help="Skip cmake setup")
+    parser.add_argument("--c-compiler", default="default", help="set C compiler")
+    parser.add_argument("--cxx-compiler", default="default", help="set C++ compiler")
+    parser.add_argument("--make-program", default="default", help="set make tool")
 
     args = parser.parse_args()
 
@@ -63,6 +66,13 @@ if __name__ == "__main__":
 
     if args.debug:
         os.environ["THTOOL_DEBUG"] = "1"
+    if args.c_compiler != "default":
+        os.environ["THTOOL_C_COMPILER"] = args.c_compiler
+    if args.cxx_compiler != "default":
+        os.environ["THTOOL_CXX_COMPILER"] = args.cxx_compiler
+    if args.make_program != "default":
+        os.environ["THTOOL_MAKE_PROGRAM"] = args.make_program
+
     os.system(f"python -m build --wheel --sdist")
 
     for root, dirs, files in os.walk(os.path.join(ROOT, "build")):

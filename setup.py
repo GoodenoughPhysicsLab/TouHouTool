@@ -8,10 +8,24 @@ class CMakeBuild(build_ext):
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
 
-        if not os.path.exists(self.build_temp):
-            os.makedirs(self.build_temp)
-        os.system(f"cmake -S cpp -B build "
-                  f"-DPYTHON_EXECUTABLE={sys.executable} ")
+        c_compiler = os.environ.get("THTOOL_C_COMPILER", "")
+        cxx_compiler = os.environ.get("THTOOL_CXX_COMPILER", "")
+        make_program = os.environ.get("THTOOL_MAKE_PROGRAM", "")
+
+        if c_compiler != "":
+            c_compiler = f"-DCMAKE_C_COMPILER={c_compiler} "
+        if cxx_compiler != "":
+            cxx_compiler = f"-DCMAKE_CXX_COMPILER={cxx_compiler} "
+        if make_program != "":
+            make_program = f"-DCMAKE_MAKE_PROGRAM={make_program} "
+
+        enable_mingw = ""
+        if cxx_compiler or make_program:
+            enable_mingw = "-G \"MinGW Makefiles\" "
+
+        os.system(f"cmake .\\cpp\\CMakeLists.txt -B build "
+                  f"-DPYTHON_EXECUTABLE={sys.executable} "
+                  + c_compiler + cxx_compiler + make_program + enable_mingw)
         os.system(f"cmake --build build "
                   f"--config {'Debug' if os.environ.get('THTOOL_DEBUG') else 'Release'}")
 

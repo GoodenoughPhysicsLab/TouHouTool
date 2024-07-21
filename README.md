@@ -32,9 +32,17 @@ this will build all python excutable extension and copy them to the thtool.
 python .\make.py --debug
 ```
 
+> use `g++` or `clang++`
+```cmd
+python .\make.py --c-compiler gcc --cxx-compiler g++ --make-program gnumake
+```
+```cmd
+python .\make.py --c-compiler clang --cxx-compiler clang++ --make-program gnumake
+```
+
 > escape cmake setup:
 
-if you have not edited any CMakeLists.txt after the first build, you can use this command to skip the cmake setup to speed up your bulid:
+if you have not edited any CMakeLists.txt after the first build and do not change your C++ compiler to build, you can use this command to skip the cmake setup to speed up your bulid:
 ```cmd
 python .\make.py --skip-cmake-setup
 ```
