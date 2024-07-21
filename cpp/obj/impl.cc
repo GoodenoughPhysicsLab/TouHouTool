@@ -8,8 +8,14 @@ PYBIND11_MODULE(obj, m) {
         .def(py::init<>());
 
     py::class_<thtool::obj::Player>(m, "Player")
-        .def(py::init<double, double>())
+        .def(py::init<thtool::f32::float32_type, thtool::f32::float32_type>())
         .def("__repr__", &thtool::obj::Player::__repr__)
         .def("get_width", &thtool::obj::Player::get_width)
         .def("get_height", &thtool::obj::Player::get_height);
+
+    py::class_<thtool::obj::Resource>(m, "Resource")
+        .def(py::init<thtool::f32::float32_type, thtool::f32::float32_type>())
+        .def("__repr__", &thtool::obj::Resource::__repr__)
+        .def("get_width", &thtool::obj::Resource::get_width)
+        .def("get_height", &thtool::obj::Resource::get_height);
 }

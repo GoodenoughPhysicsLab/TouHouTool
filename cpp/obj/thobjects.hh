@@ -37,9 +37,10 @@ class Player : public details::ThObject_<Player> {
     static constexpr f32::float32_type width{2}, height{2};
 public:
     Player() = delete;
+    ~Player() = default;
     Player(f32::float32_type x, f32::float32_type y) : ThObject_(x, y) {}
 
-    py::str __repr__() {
+    py::str __repr__() const {
         return py::str("Player(x={}, y={})").format(this->x_, this->y_);
     }
 };
@@ -58,7 +59,16 @@ class EnemyLaser : public details::ThObject_<EnemyLaser> {
 
 // Resources : like Power, ...
 class Resource : public details::ThObject_<Resource> {
-    //
+    friend class details::ThObject_<Resource>;
+    static constexpr f32::float32_type width{6}, height{6};
+public:
+    Resource() = delete;
+    ~Resource() = default;
+    Resource(f32::float32_type x, f32::float32_type y) : ThObject_(x, y) {}
+
+    py::str __repr__() const {
+        return py::str("Resource(x={}, y={})").format(this->x_, this->y_);
+    }
 };
 
 } // namespace thtool::obj

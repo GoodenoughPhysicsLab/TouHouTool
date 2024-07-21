@@ -4,8 +4,6 @@ from enum import Enum, unique
 from typing import Type, Optional, Union, List
 from . import window
 
-__all__ = ["Behavior", "send"]
-
 @unique
 class Behavior(Enum):
     left = pynput.keyboard.Key.left

@@ -4,12 +4,9 @@
 namespace thtool::readmem {
 
 class GameNotStartError : public ::std::exception {
-    fast_io::string_view err_msg;
+    fast_io::string_view err_msg{"checking game NOT start(don't means touhou window not open)"};
 public:
-    GameNotStartError(fast_io::string_view msg) {
-        this->err_msg = msg;
-    }
-
+    GameNotStartError() = default;
     ~GameNotStartError() = default;
 
     const char* what() const noexcept override {

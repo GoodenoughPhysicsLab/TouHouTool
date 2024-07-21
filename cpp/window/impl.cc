@@ -20,4 +20,5 @@ PYBIND11_MODULE(window, m) {
     m.def("is_foreground", thtool::window::is_foreground);
 
     m.def("fsl_get_player", thtool::readmem::fsl_get_player);
+    m.def("fsl_get_resources", thtool::readmem::fsl_get_resources);
 }

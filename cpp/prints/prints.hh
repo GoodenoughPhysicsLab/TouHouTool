@@ -3,7 +3,7 @@
 #include <string_view>
 #include "../fast_io/fast_io.h"
 
-namespace details {
+namespace thtool::details {
 
 struct color_base {
     static constexpr ::std::string_view color_end{"\033[39m"};
@@ -14,7 +14,7 @@ constexpr ::std::uint_least32_t utf8_coding{65001u};  // utf8
 static ::std::uint_least32_t output{};
 static ::std::uint_least32_t input{};
 
-} //  details
+} //  namespace thtool::details
 
 namespace thtool::prints {
 
@@ -65,35 +65,35 @@ inline void cancle_set_win32_console_io_cp_to_utf8() {
 }
 
 
-struct black : ::details::color_base {
+struct black : details::color_base {
     static constexpr ::std::string_view color{"\033[30m"};
 };
 
-struct red : ::details::color_base {
+struct red : details::color_base {
     static constexpr ::std::string_view color{"\033[31m"};
 };
 
-struct green : ::details::color_base {
+struct green : details::color_base {
     static constexpr ::std::string_view color{"\033[32m"};
 };
 
-struct yellow : ::details::color_base {
+struct yellow : details::color_base {
     static constexpr ::std::string_view color{"\033[33m"};
 };
 
-struct blue : ::details::color_base {
+struct blue : details::color_base {
     static constexpr ::std::string_view color{"\033[34m"};
 };
 
-struct magenta : ::details::color_base {
+struct magenta : details::color_base {
     static constexpr ::std::string_view color{"\033[35m"};
 };
 
-struct cyan : ::details::color_base {
+struct cyan : details::color_base {
     static constexpr ::std::string_view color{"\033[36m"};
 };
 
-struct white : ::details::color_base {
+struct white : details::color_base {
     static constexpr ::std::string_view color{"\033[37m"};
 };
 
