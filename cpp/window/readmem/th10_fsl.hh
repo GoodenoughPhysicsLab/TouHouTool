@@ -47,17 +47,17 @@ inline auto fsl_get_player() {
 
 inline auto fsl_get_enemies() {
     SIZE_T nbr;
-	uint32_t base{}, obj_base{}, obj_addr, obj_next{};
+    uint32_t base{}, obj_base{}, obj_addr, obj_next{};
 
-	ReadProcessMemory(details::get_process_handle(),
+    ReadProcessMemory(details::get_process_handle(),
                       LPCVOID(0x00477704),
                       &base,
                       SIZE_T(4),
                       &nbr);
-	if (base == 0) {
-		throw GameNotStartError();
-	}
-	ReadProcessMemory(details::get_process_handle(),
+    if (base == 0) {
+        throw GameNotStartError();
+    }
+    ReadProcessMemory(details::get_process_handle(),
                       reinterpret_cast<LPCVOID>(base + 0x58),
                       &obj_base,
                       SIZE_T(4),
@@ -67,63 +67,63 @@ inline auto fsl_get_enemies() {
                                 f32::float32_type,
                                 f32::float32_type,
                                 f32::float32_type>> res{};
-	if (obj_base) {
-		while (true)
+    if (obj_base) {
+        while (true)
         {
-			ReadProcessMemory(details::get_process_handle(),
+            ReadProcessMemory(details::get_process_handle(),
                               reinterpret_cast<LPCVOID>(obj_base),
                               &obj_addr,
                               SIZE_T(4),
                               &nbr);
-			ReadProcessMemory(details::get_process_handle(),
+            ReadProcessMemory(details::get_process_handle(),
                               reinterpret_cast<LPCVOID>(obj_base + 4),
                               &obj_next,
                               SIZE_T(4),
                               &nbr);
-			obj_addr += 0x103C;
-			uint32_t t;
-			ReadProcessMemory(details::get_process_handle(),
+            obj_addr += 0x103C;
+            uint32_t t;
+            ReadProcessMemory(details::get_process_handle(),
                               reinterpret_cast<LPCVOID>(obj_addr + 0x1444),
                               &t,
                               SIZE_T(4),
                               &nbr);
-			if ((t & 0x40) == 0) {
-				ReadProcessMemory(details::get_process_handle(),
+            if ((t & 0x40) == 0) {
+                ReadProcessMemory(details::get_process_handle(),
                                   reinterpret_cast<LPCVOID>(obj_addr + 0x1444),
                                   &t,
                                   SIZE_T(4),
                                   &nbr);
-				if ((t & 0x12) == 0) {
-					f32::float32_type x, y, w, h;
-					ReadProcessMemory(details::get_process_handle(),
+                if ((t & 0x12) == 0) {
+                    f32::float32_type x, y, w, h;
+                    ReadProcessMemory(details::get_process_handle(),
                                       reinterpret_cast<LPCVOID>(obj_addr + 0x2C),
                                       &x,
                                       SIZE_T(4),
                                       &nbr);
-					ReadProcessMemory(details::get_process_handle(),
+                    ReadProcessMemory(details::get_process_handle(),
                                       reinterpret_cast<LPCVOID>(obj_addr + 0x30),
                                       &y,
                                       SIZE_T(4),
                                       &nbr);
-					ReadProcessMemory(details::get_process_handle(),
+                    ReadProcessMemory(details::get_process_handle(),
                                       reinterpret_cast<LPCVOID>(obj_addr + 0xB8),
                                       &w,
                                       SIZE_T(4),
                                       &nbr);
-					ReadProcessMemory(details::get_process_handle(),
+                    ReadProcessMemory(details::get_process_handle(),
                                       reinterpret_cast<LPCVOID>(obj_addr + 0xBC),
                                       &h,
                                       SIZE_T(4),
                                       &nbr);
-					res.emplace_back(x, y, w, h);
-				}
-			}
-			if (obj_next == 0) {
-				break;
-			}
-			obj_base = obj_next;
-		}
-	}
+                    res.emplace_back(x, y, w, h);
+                }
+            }
+            if (obj_next == 0) {
+                break;
+            }
+            obj_base = obj_next;
+        }
+    }
     return res;
 }
 
@@ -215,43 +215,43 @@ inline auto fsl_get_enemy_laser() {
 
 inline auto fsl_get_resources() {
     SIZE_T nbr;
-	uint32_t base;
-	ReadProcessMemory(details::get_process_handle(),
+    uint32_t base;
+    ReadProcessMemory(details::get_process_handle(),
                      LPCVOID(0x00477818),
                      &base,
                      SIZE_T(4),
                      &nbr);
-	if (base == 0) {
-		throw GameNotStartError();
-	}
-	uint32_t esi = base + 0x14;
-	uint32_t ebp = esi + 0x3B0;
+    if (base == 0) {
+        throw GameNotStartError();
+    }
+    uint32_t esi = base + 0x14;
+    uint32_t ebp = esi + 0x3B0;
     ::std::vector<::std::tuple<f32::float32_type, f32::float32_type>> res{};
 
-	for (int i = 0; i < 2000; i++)
-	{
-		uint32_t eax;
-		ReadProcessMemory(details::get_process_handle(),
+    for (int i = 0; i < 2000; i++)
+    {
+        uint32_t eax;
+        ReadProcessMemory(details::get_process_handle(),
                           reinterpret_cast<LPCVOID>(ebp + 0x2C),
                           &eax,
                           SIZE_T(4),
                           &nbr);
-		if (eax != 0) {
-			f32::float32_type x, y;
-			ReadProcessMemory(details::get_process_handle(),
+        if (eax != 0) {
+            f32::float32_type x, y;
+            ReadProcessMemory(details::get_process_handle(),
                               reinterpret_cast<LPCVOID>(ebp - 0x4),
                               &x,
                               SIZE_T(4),
                               &nbr);
-			ReadProcessMemory(details::get_process_handle(),
+            ReadProcessMemory(details::get_process_handle(),
                               reinterpret_cast<LPCVOID>(ebp),
                               &y,
                               SIZE_T(4),
                               &nbr);
-			res.emplace_back(x, y);
-		}
-		ebp += 0x3F0;
-	}
+            res.emplace_back(x, y);
+        }
+        ebp += 0x3F0;
+    }
     return res;
 }
 

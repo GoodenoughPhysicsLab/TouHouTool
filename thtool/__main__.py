@@ -6,6 +6,10 @@ from . import window
 from . import scene
 from . import kb_control
 
+def main_loop() -> None:
+    img = scene.get_scene() # raise BindError if th-window closed
+    scene.get_player() # raise GameNotStartError if th-game not started
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="thtool(TouHouTool) : tools for TouHou project")
 
@@ -47,12 +51,15 @@ def main() -> None:
     try:
         while True:
             kb_control.do_if_checkout_foreground()
-            img = scene.get_scene()
-            print(scene.get_enemy_bullets())
-            # kb_control.send(kb_control.Behavior.bomb)
-            # time.sleep(1)
-    except window.BindError: # window closed
-        print("Find touhou window closed")
+
+            try:
+                main_loop()
+            except window.GameNotStartError:
+                print("Checking touhou game NOT start", end="\r")
+            else:
+                print("Checking touhou game start    ", end="\r")
+    except window.BindError:
+        print("\nChecking touhou window closed")
         exit(0)
     finally:
         cv2.destroyAllWindows()
@@ -64,6 +71,6 @@ if __name__ == '__main__':
         prints.enable_win32_ansi()
         main()
     except KeyboardInterrupt:
-        print("Keyboard interrupt!")
+        print("\nKeyboard interrupt!")
 else:
     raise RuntimeError("This file is not intended to be imported!")

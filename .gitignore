@@ -43,4 +43,7 @@ fast_io/
 
 *.pyd
 *.bmp
+*.jpg
+*.png
 *.test.*
+dataset/scene.py
