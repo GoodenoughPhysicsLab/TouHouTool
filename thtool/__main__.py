@@ -48,7 +48,7 @@ def main() -> None:
         while True:
             kb_control.do_if_checkout_foreground()
             img = scene.get_scene()
-            # print(scene.get_player())
+            print(scene.get_enemy_bullets())
             # kb_control.send(kb_control.Behavior.bomb)
             # time.sleep(1)
     except window.BindError: # window closed

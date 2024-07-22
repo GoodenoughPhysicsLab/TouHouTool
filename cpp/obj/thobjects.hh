@@ -61,7 +61,29 @@ public:
 };
 
 class EnemyBullet : public details::ThObject_<EnemyBullet> {
-    //
+    friend class details::ThObject_<EnemyBullet>;
+    // dx, dy : bullet's derection is `dy / dx`
+    // TODO : I just gain the derection, can I gain the step bullet will move
+    f32::float32_type width, height, dx, dy;
+public:
+    EnemyBullet() = delete;
+    ~EnemyBullet() = default;
+    EnemyBullet(f32::float32_type x,
+                f32::float32_type y,
+                f32::float32_type width,
+                f32::float32_type height,
+                f32::float32_type dx,
+                f32::float32_type dy)
+        : ThObject_(x, y), width(width), height(height), dx(dx), dy(dy) {}
+
+    f32::float32_type get_direction() const noexcept {
+        return dy / dx;
+    }
+
+    py::str __repr__() const {
+        return py::str("EnemyBullet(x={}, y={}, width={}, height={}, dx={}, dy={})")
+               .format(this->x_, this->y_, this->width, this->height, this->dx, this->dy);
+    }
 };
 
 class EnemyLaser : public details::ThObject_<EnemyLaser> {

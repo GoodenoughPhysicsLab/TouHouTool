@@ -16,3 +16,6 @@ def get_resources() -> List[obj.Resource]:
 
 def get_enemies() -> List[obj.Enemy]:
     return [obj.Enemy(*enemy) for enemy in window.fsl_get_enemies()]
+
+def get_enemy_bullets() -> List[obj.EnemyBullet]:
+    return [obj.EnemyBullet(*bullet) for bullet in window.fsl_get_enemy_bullets()]

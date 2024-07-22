@@ -22,6 +22,18 @@ PYBIND11_MODULE(obj, m) {
         .def("get_width", &thtool::obj::Enemy::get_width)
         .def("get_height", &thtool::obj::Enemy::get_height);
 
+    py::class_<thtool::obj::EnemyBullet>(m, "EnemyBullet")
+        .def(py::init<thtool::f32::float32_type,
+                            thtool::f32::float32_type,
+                            thtool::f32::float32_type,
+                            thtool::f32::float32_type,
+                            thtool::f32::float32_type,
+                            thtool::f32::float32_type>())
+        .def("__repr__", &thtool::obj::EnemyBullet::__repr__)
+        .def("get_width", &thtool::obj::EnemyBullet::get_width)
+        .def("get_height", &thtool::obj::EnemyBullet::get_height)
+        .def("get_direction", &thtool::obj::EnemyBullet::get_direction);
+
     py::class_<thtool::obj::Resource>(m, "Resource")
         .def(py::init<thtool::f32::float32_type, thtool::f32::float32_type>())
         .def("__repr__", &thtool::obj::Resource::__repr__)

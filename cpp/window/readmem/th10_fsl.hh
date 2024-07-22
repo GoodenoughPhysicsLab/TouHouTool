@@ -47,7 +47,7 @@ inline auto fsl_get_player() {
 
 inline auto fsl_get_enemies() {
     SIZE_T nbr;
-	uint32_t base{}, obj_base{}, obj_addr, obj_next;
+	uint32_t base{}, obj_base{}, obj_addr, obj_next{};
 
 	ReadProcessMemory(details::get_process_handle(),
                       LPCVOID(0x00477704),
@@ -127,7 +127,89 @@ inline auto fsl_get_enemies() {
     return res;
 }
 
-inline auto fsl_get_enemy_bullet() {
+inline auto fsl_get_enemy_bullets() {
+    uint32_t base{};
+    SIZE_T nbr;
+    ReadProcessMemory(details::get_process_handle(),
+                    LPCVOID(0x004776F0),
+                    &base,
+                    SIZE_T(4),
+                    &nbr);
+    if (base == 0) {
+        throw GameNotStartError();
+    }
+    uint32_t ebx = base + 0x60;
+    ::std::vector<::std::tuple<f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type>> res{};
+    for (int _{}; _ < 2000; ++_)
+    {
+        uint32_t edi = ebx + 0x400;
+        uint32_t bp{};
+        ReadProcessMemory(details::get_process_handle(),
+                        reinterpret_cast<LPCVOID>(edi + 0x46),
+                        &bp,
+                        SIZE_T(4),
+                        &nbr);
+        bp &= 0x0000FFFF;
+        if (bp) {
+            uint32_t eax{};
+            ReadProcessMemory(details::get_process_handle(),
+                            reinterpret_cast<LPCVOID>(0x477810),
+                            &eax,
+                            SIZE_T(4),
+                            &nbr);
+            if (eax) {
+                ReadProcessMemory(details::get_process_handle(),
+                                reinterpret_cast<LPCVOID>(eax + 0x58),
+                                &eax,
+                                SIZE_T(4),
+                                &nbr);
+                if ((eax & 0x00000400) == 0) {
+                    f32::float32_type x, y, w, h, dx, dy;
+                    ReadProcessMemory(details::get_process_handle(),
+                                    reinterpret_cast<LPCVOID>(ebx + 0x3C0),
+                                    &dx,
+                                    SIZE_T(4),
+                                    &nbr);
+                    ReadProcessMemory(details::get_process_handle(),
+                                    reinterpret_cast<LPCVOID>(ebx + 0x3C4),
+                                    &dy,
+                                    SIZE_T(4),
+                                    &nbr);
+                    ReadProcessMemory(details::get_process_handle(),
+                                    reinterpret_cast<LPCVOID>(ebx + 0x3B4),
+                                    &x,
+                                    SIZE_T(4),
+                                    &nbr);
+                    ReadProcessMemory(details::get_process_handle(),
+                                    reinterpret_cast<LPCVOID>(ebx + 0x3B8),
+                                    &y,
+                                    SIZE_T(4),
+                                    &nbr);
+                    ReadProcessMemory(details::get_process_handle(),
+                                    reinterpret_cast<LPCVOID>(ebx + 0x3F0),
+                                    &w,
+                                    SIZE_T(4),
+                                    &nbr);
+                    ReadProcessMemory(details::get_process_handle(),
+                                    reinterpret_cast<LPCVOID>(ebx + 0x3F4),
+                                    &h,
+                                    SIZE_T(4),
+                                    &nbr);
+                    res.emplace_back(x, y, w, h, dx, dy);
+                }
+            }
+        }
+        ebx += 0x7F0;
+    }
+    return res;
+}
+
+inline auto fsl_get_enemy_laser() {
     //
 }
 
