@@ -21,7 +21,7 @@ namespace thtool::readmem {
 
 inline auto fsl_get_player() {
     f32::float32_type x, y;
-    int32_t obj_base;
+    uint32_t obj_base{};
     SIZE_T nbr;
     ReadProcessMemory(details::get_process_handle(),
                       LPCVOID(0x00477834),
@@ -45,8 +45,86 @@ inline auto fsl_get_player() {
     return ::std::make_tuple(x, y);
 }
 
-inline auto fsl_get_enemy() {
-    //
+inline auto fsl_get_enemies() {
+    SIZE_T nbr;
+	uint32_t base{}, obj_base{}, obj_addr, obj_next;
+
+	ReadProcessMemory(details::get_process_handle(),
+                      LPCVOID(0x00477704),
+                      &base,
+                      SIZE_T(4),
+                      &nbr);
+	if (base == 0) {
+		throw GameNotStartError();
+	}
+	ReadProcessMemory(details::get_process_handle(),
+                      reinterpret_cast<LPCVOID>(base + 0x58),
+                      &obj_base,
+                      SIZE_T(4),
+                      &nbr);
+
+    ::std::vector<::std::tuple<f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type>> res{};
+	if (obj_base) {
+		while (true)
+        {
+			ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(obj_base),
+                              &obj_addr,
+                              SIZE_T(4),
+                              &nbr);
+			ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(obj_base + 4),
+                              &obj_next,
+                              SIZE_T(4),
+                              &nbr);
+			obj_addr += 0x103C;
+			uint32_t t;
+			ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(obj_addr + 0x1444),
+                              &t,
+                              SIZE_T(4),
+                              &nbr);
+			if ((t & 0x40) == 0) {
+				ReadProcessMemory(details::get_process_handle(),
+                                  reinterpret_cast<LPCVOID>(obj_addr + 0x1444),
+                                  &t,
+                                  SIZE_T(4),
+                                  &nbr);
+				if ((t & 0x12) == 0) {
+					f32::float32_type x, y, w, h;
+					ReadProcessMemory(details::get_process_handle(),
+                                      reinterpret_cast<LPCVOID>(obj_addr + 0x2C),
+                                      &x,
+                                      SIZE_T(4),
+                                      &nbr);
+					ReadProcessMemory(details::get_process_handle(),
+                                      reinterpret_cast<LPCVOID>(obj_addr + 0x30),
+                                      &y,
+                                      SIZE_T(4),
+                                      &nbr);
+					ReadProcessMemory(details::get_process_handle(),
+                                      reinterpret_cast<LPCVOID>(obj_addr + 0xB8),
+                                      &w,
+                                      SIZE_T(4),
+                                      &nbr);
+					ReadProcessMemory(details::get_process_handle(),
+                                      reinterpret_cast<LPCVOID>(obj_addr + 0xBC),
+                                      &h,
+                                      SIZE_T(4),
+                                      &nbr);
+					res.emplace_back(x, y, w, h);
+				}
+			}
+			if (obj_next == 0) {
+				break;
+			}
+			obj_base = obj_next;
+		}
+	}
+    return res;
 }
 
 inline auto fsl_get_enemy_bullet() {
@@ -55,7 +133,7 @@ inline auto fsl_get_enemy_bullet() {
 
 inline auto fsl_get_resources() {
     SIZE_T nbr;
-	int32_t base;
+	uint32_t base;
 	ReadProcessMemory(details::get_process_handle(),
                      LPCVOID(0x00477818),
                      &base,
@@ -64,13 +142,13 @@ inline auto fsl_get_resources() {
 	if (base == 0) {
 		throw GameNotStartError();
 	}
-	int32_t esi = base + 0x14;
-	int32_t ebp = esi + 0x3B0;
+	uint32_t esi = base + 0x14;
+	uint32_t ebp = esi + 0x3B0;
     ::std::vector<::std::tuple<f32::float32_type, f32::float32_type>> res{};
 
 	for (int i = 0; i < 2000; i++)
 	{
-		int32_t eax;
+		uint32_t eax;
 		ReadProcessMemory(details::get_process_handle(),
                           reinterpret_cast<LPCVOID>(ebp + 0x2C),
                           &eax,

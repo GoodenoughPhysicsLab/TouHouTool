@@ -46,7 +46,18 @@ public:
 };
 
 class Enemy : public details::ThObject_<Enemy> {
-    //
+    friend class details::ThObject_<Enemy>;
+    f32::float32_type width, height;
+public:
+    Enemy() = delete;
+    ~Enemy() = default;
+    Enemy(f32::float32_type x, f32::float32_type y, f32::float32_type width, f32::float32_type height)
+        : ThObject_(x, y), width(width), height(height) {}
+
+    py::str __repr__() const {
+        return py::str("Enemy(x={}, y={}, width={}, height={})")
+                .format(this->x_, this->y_, this->width, this->height);
+    }
 };
 
 class EnemyBullet : public details::ThObject_<EnemyBullet> {

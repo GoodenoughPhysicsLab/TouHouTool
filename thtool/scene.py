@@ -13,3 +13,6 @@ def get_player() -> obj.Player:
 
 def get_resources() -> List[obj.Resource]:
     return [obj.Resource(*resource) for resource in window.fsl_get_resources()]
+
+def get_enemies() -> List[obj.Enemy]:
+    return [obj.Enemy(*enemy) for enemy in window.fsl_get_enemies()]
