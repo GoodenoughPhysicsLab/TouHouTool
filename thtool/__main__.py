@@ -88,6 +88,7 @@ def main() -> None:
                             (0, 0, 255)
                         )
 
+                    # draw enemy_bullets
                     for enemy_bullet in game_elements.enemy_bullets:
                         cv2.rectangle(
                             blank,
@@ -98,6 +99,48 @@ def main() -> None:
                              (0, 0, 255)
                         )
 
+                    # draw enemy_lasers
+                    def _rotate_point(cx, cy, x, y, radian):
+                        res_x = cx + (x - cx) * math.cos(radian) - (y - cy) * math.sin(radian)
+                        res_y = cy + (x - cx) * math.sin(radian) + (y - cy) * math.cos(radian)
+                        return res_x, res_y
+
+                    for enemy_laser in game_elements.enemy_lasers:
+                        cy = enemy_laser.get_y() + enemy_laser.get_height() / 2
+                        _x1, _y1 = _rotate_point(
+                            184 + enemy_laser.get_x(), cy,
+                            184 + enemy_laser.get_x() - enemy_laser.get_width() / 2,
+                            enemy_laser.get_y(),
+                            enemy_laser.get_radian() - math.pi / 2
+                        )
+                        _x2, _y2 = _rotate_point(
+                            184 + enemy_laser.get_x(), cy,
+                            184 + enemy_laser.get_x() + enemy_laser.get_width() / 2,
+                            enemy_laser.get_y(),
+                            enemy_laser.get_radian() - math.pi / 2
+                        )
+                        _x3, _y3 = _rotate_point(
+                            184 + enemy_laser.get_x(), cy,
+                            184 + enemy_laser.get_x() + enemy_laser.get_width() / 2,
+                            enemy_laser.get_y() + enemy_laser.get_height(),
+                            enemy_laser.get_radian() - math.pi / 2
+                        )
+                        _x4, _y4 = _rotate_point(
+                            184 + enemy_laser.get_x(), cy,
+                            184 + enemy_laser.get_x() - enemy_laser.get_width() / 2,
+                            enemy_laser.get_y() + enemy_laser.get_height(),
+                            enemy_laser.get_radian() - math.pi / 2
+                        )
+
+                        pts = np.array([
+                            [_x1, _y1],
+                            [_x2, _y2],
+                            [_x3, _y3],
+                            [_x4, _y4],
+                        ], dtype=np.int32)
+                        cv2.polylines(blank, [pts], True, (0, 0, 255))
+
+                    # draw resources
                     for resource in game_elements.resources:
                         cv2.rectangle(
                             blank,
