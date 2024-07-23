@@ -4,6 +4,7 @@ build/
 dist/
 __pycache__/
 *.egg-info/
+thdataset/
 
 pybind11/
 fast_io/
@@ -45,5 +46,8 @@ fast_io/
 *.bmp
 *.jpg
 *.png
+*.7z
+*.zip
+*.tar.*
 *.test.*
 dataset/scene.py
