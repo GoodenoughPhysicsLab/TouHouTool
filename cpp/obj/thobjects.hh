@@ -2,6 +2,7 @@
 
 #include <pybind11/pybind11.h>
 #include "../../_float32.hh"
+#include "pybind11/pytypes.h"
 
 namespace py = pybind11;
 
@@ -23,6 +24,9 @@ public:
     ThObject_() = delete;
     ThObject_(f32::float32_type x, f32::float32_type y)
         : x_(x), y_(y) {}
+
+    f32::float32_type get_x() { return this->x_; }
+    f32::float32_type get_y() { return this->y_; }
 
     f32::float32_type get_width() { return (static_cast<Child*>(this))->width; }
     f32::float32_type get_height() { return (static_cast<Child*>(this))->height; }
@@ -87,7 +91,27 @@ public:
 };
 
 class EnemyLaser : public details::ThObject_<EnemyLaser> {
-    //
+    friend class details::ThObject_<EnemyLaser>;
+    f32::float32_type width, height, radian;
+public:
+    EnemyLaser() = delete;
+    ~EnemyLaser() = default;
+
+    EnemyLaser(f32::float32_type x,
+                f32::float32_type y,
+                f32::float32_type width,
+                f32::float32_type height,
+                f32::float32_type radian)
+        : ThObject_(x, y), width(width), height(height), radian(radian) {}
+
+    py::str __repr__() const {
+        return py::str("EnemyLaser(x={}, y={}, width={}, height={}, radian={})")
+               .format(this->x_, this->y_, this->width, this->height, this->radian);
+    }
+
+    f32::float32_type get_radian() const noexcept {
+        return this->radian;
+    }
 };
 
 // Resources : like Power, ...

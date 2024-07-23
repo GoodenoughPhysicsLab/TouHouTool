@@ -209,8 +209,74 @@ inline auto fsl_get_enemy_bullets() {
     return res;
 }
 
-inline auto fsl_get_enemy_laser() {
-    //
+inline auto fsl_get_enemy_lasers() {
+    uint32_t base{};
+    SIZE_T nbr;
+    ReadProcessMemory(details::get_process_handle(),
+                    LPCVOID(0x0047781C),
+                    &base,
+                    SIZE_T(4),
+                    &nbr);
+    if (base == 0) {
+        throw GameNotStartError();
+    }
+
+    uint32_t esi{}, ebx{};
+    ReadProcessMemory(details::get_process_handle(),
+                      reinterpret_cast<LPCVOID>(base + 0x18),
+                      &esi,
+                      SIZE_T(4),
+                      &nbr);
+
+    ::std::vector<::std::tuple<f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type,
+                                f32::float32_type>> res{};
+    if (esi)
+    {
+        while (true)
+        {
+            ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(esi + 0x8),
+                              &ebx,
+                              SIZE_T(4),
+                              &nbr);
+            f32::float32_type x, y, h, w, arc;
+            ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(esi + 0x24),
+                              &x,
+                              SIZE_T(4),
+                              &nbr);
+            ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(esi + 0x28),
+                              &y,
+                              SIZE_T(4),
+                              &nbr);
+            ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(esi + 0x3C),
+                              &arc,
+                              SIZE_T(4),
+                              &nbr);
+            ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(esi + 0x40),
+                              &h,
+                              SIZE_T(4),
+                              &nbr);
+            ReadProcessMemory(details::get_process_handle(),
+                              reinterpret_cast<LPCVOID>(esi + 0x44),
+                              &w,
+                              SIZE_T(4),
+                              &nbr);
+            // res.emplace_back(x, y, w / 2.0f, h, arc);
+            res.emplace_back(x, y, w, h, arc);
+            if (ebx == NULL) {
+                break;
+            }
+            esi = ebx;
+        }
+    }
+    return res;
 }
 
 inline auto fsl_get_resources() {

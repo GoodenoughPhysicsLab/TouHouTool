@@ -1,14 +1,12 @@
-import time
+import math
 import argparse
 import cv2
+import numpy as np
 from . import prints
 from . import window
 from . import scene
 from . import kb_control
-
-def main_loop() -> None:
-    img = scene.get_scene() # raise BindError if th-window closed
-    scene.get_player() # raise GameNotStartError if th-game not started
+from typing import Optional
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="thtool(TouHouTool) : tools for TouHou project")
@@ -22,6 +20,7 @@ def main() -> None:
                             "[ --bind guess ] bind to a window thtool guessed; "
                             "[ --bind <title> ] bind to a window with title <title>")
     parser.add_argument("--always-shoot", action="store_true", help="player always shoot without pressing 'z'")
+    parser.add_argument("--draw", action="store_true", help="draw the scene")
 
     args = parser.parse_args()
 
@@ -47,19 +46,72 @@ def main() -> None:
     if args.always_shoot:
         kb_control.send(kb_control.Behavior.shoot, deltatime=None, in_queue=True)
 
+    game_start_status: Optional[bool] = None # False: not start, True: start, None: not checked
     window.init_Gdiplus()
     try:
         while True:
             kb_control.do_if_checkout_foreground()
 
             try:
-                main_loop()
+                img = scene.get_scene() # raise BindError if th-window closed
+                game_elements = scene.GameElements() # raise GameNotStartError if game not start
             except window.GameNotStartError:
-                print("Checking touhou game NOT start", end="\r")
+                if game_start_status is not False:
+                    print("Checking touhou game NOT start")
+                    game_start_status = False
             else:
-                print("Checking touhou game start    ", end="\r")
+                if game_start_status is not True:
+                    print("Checking touhou game start")
+                    game_start_status = True
+
+                if args.draw:
+                    blank = np.zeros_like(img)
+
+                    # draw player
+                    cv2.rectangle(
+                        blank,
+                        (int(game_elements.player.get_x() + 184 - game_elements.player.get_width() / 2)
+                        , int(game_elements.player.get_y() - game_elements.player.get_height() / 2)),
+                        (int(game_elements.player.get_x() + 184 + game_elements.player.get_width() / 2)
+                        , int(game_elements.player.get_y() + game_elements.player.get_height() / 2)),
+                        (255, 0, 0)
+                    )
+
+                    #draw enemies
+                    for enemy in game_elements.enemies:
+                        cv2.rectangle(
+                            blank,
+                            (int(enemy.get_x() + 184 - enemy.get_width() / 2)
+                            , int(enemy.get_y() - enemy.get_height() / 2)),
+                            (int(enemy.get_x() + 184 + enemy.get_width() / 2),
+                            int(enemy.get_y() + enemy.get_height() / 2)),
+                            (0, 0, 255)
+                        )
+
+                    for enemy_bullet in game_elements.enemy_bullets:
+                        cv2.rectangle(
+                            blank,
+                            (int(enemy_bullet.get_x() + 184 - enemy_bullet.get_width() / 2)
+                            , int(enemy_bullet.get_y() - enemy_bullet.get_height() / 2)),
+                            (int(enemy_bullet.get_x() + 184 + enemy_bullet.get_width() / 2)
+                             , int(enemy_bullet.get_y() + enemy_bullet.get_height() / 2)),
+                             (0, 0, 255)
+                        )
+
+                    for resource in game_elements.resources:
+                        cv2.rectangle(
+                            blank,
+                            (int(resource.get_x() + 184 - resource.get_width() / 2)
+                            , int(resource.get_y() - resource.get_height() / 2)),
+                            (int(resource.get_x() + 184 + resource.get_width() / 2)
+                             , int(resource.get_y()+ resource.get_height() / 2)),
+                             (0, 255, 0)
+                        )
+
+                    cv2.imshow("thtool", blank)
+                    cv2.waitKey(1)
     except window.BindError:
-        print("\nChecking touhou window closed")
+        print("Checking touhou window closed")
         exit(0)
     finally:
         cv2.destroyAllWindows()
@@ -71,6 +123,6 @@ if __name__ == '__main__':
         prints.enable_win32_ansi()
         main()
     except KeyboardInterrupt:
-        print("\nKeyboard interrupt!")
+        print("Keyboard interrupt!")
 else:
     raise RuntimeError("This file is not intended to be imported!")

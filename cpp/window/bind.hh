@@ -150,7 +150,7 @@ namespace thtool::bind {
 inline void bind_guess() {
     EnumWindows(details::bind_guess_proc, 0);
     if (!TH_hwnd.has_value()) {
-        throw BindError("no match TouHou window");
+        throw BindError("no match TouHou window, please open your th-game window");
     }
 }
 

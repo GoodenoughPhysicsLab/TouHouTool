@@ -22,5 +22,6 @@ PYBIND11_MODULE(window, m) {
     m.def("fsl_get_player", thtool::readmem::fsl_get_player);
     m.def("fsl_get_enemies", thtool::readmem::fsl_get_enemies);
     m.def("fsl_get_enemy_bullets", thtool::readmem::fsl_get_enemy_bullets);
+    m.def("fsl_get_enemy_lasers", thtool::readmem::fsl_get_enemy_lasers);
     m.def("fsl_get_resources", thtool::readmem::fsl_get_resources);
 }
