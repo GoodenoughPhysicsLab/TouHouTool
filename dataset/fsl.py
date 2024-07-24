@@ -3,6 +3,7 @@ import cv2
 import json
 from . import window
 from . import scene
+from typing import Optional
 
 def get_fsl_dataset():
     ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -18,6 +19,7 @@ def get_fsl_dataset():
 
     window.init_Gdiplus()
     try:
+        game_start_status: Optional[bool] = None # False: not start, True: start, None: not checked
         counter: int = 0
         while True:
             try:
@@ -32,19 +34,23 @@ def get_fsl_dataset():
                 }
 
             except window.GameNotStartError:
-                print("Checking touhou game NOT start", end="\r")
+                if game_start_status is not False:
+                    print("Checking touhou game NOT start")
+                    game_start_status = False
             else:
-                print("Checking touhou game start    ", end="\r")
-
-                with open(os.path.join(thdataset_path, f"label/th10-fsl_{counter // 25}.json"), "w") as f:
-                    f.write(json.dumps(label, indent=2))
+                if game_start_status is not True:
+                    print("Checking touhou game start")
+                    game_start_status = True
 
                 if counter % 5 == 0:
-                    cv2.imwrite(f"{thdataset_path}/image/th10-fsl_{counter // 25}.jpg", img)
+                    with open(os.path.join(thdataset_path, f"label/th10-fsl_{counter // 5}.json"), "w") as f:
+                        f.write(json.dumps(label, indent=2))
+
+                    cv2.imwrite(f"{thdataset_path}/image/th10-fsl_{counter // 5}.jpg", img)
 
             counter += 1
     except window.BindError:
-        print("\nChecking touhou window closed")
+        print("Checking touhou window closed")
         exit(0)
     finally:
         window.free_Gdiplus()
