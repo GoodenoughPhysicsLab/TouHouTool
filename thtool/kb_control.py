@@ -63,6 +63,10 @@ def send(behavior: Behavior, deltatime: Optional[Union[int, float]] = 1000, in_q
     elif in_queue:
         _send_queue.append((behavior, deltatime))
 
+def release_all() -> None:
+    for behavior, _, _ in _Behavior_list._lst:
+        _Behavior_list._keyboard.release(behavior.value)
+
 _last_is_foreground: Optional[bool] = None
 _the_time_checkout_to_other: float = 0.
 def do_if_checkout_foreground() -> None:

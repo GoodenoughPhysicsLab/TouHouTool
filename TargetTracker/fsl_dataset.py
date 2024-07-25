@@ -1,29 +1,42 @@
 import os
 import cv2
 import json
-from . import window
-from . import scene
+import shutil
+
 from typing import Optional
 
-def get_fsl_dataset():
-    ROOT = os.path.dirname(os.path.abspath(__file__))
-    thdataset_path = os.path.join(ROOT, "thdataset")
-    if not os.path.exists(thdataset_path) and not os.path.isdir(thdataset_path):
-        os.mkdir(thdataset_path)
-    if not os.path.exists(os.path.join(thdataset_path, "image")):
-        os.mkdir(os.path.join(thdataset_path, "image"))
-    if not os.path.exists(os.path.join(thdataset_path, "label")):
-        os.mkdir(os.path.join(thdataset_path, "label"))
+_ROOT = os.path.dirname(os.path.abspath(__file__))
+_THDATASET_PATH = os.path.join(_ROOT, "thdataset")
+
+def gain_dependency() -> None:
+    for thtoolroot, _, files in os.walk(os.path.join(os.path.dirname(_ROOT), "thtool")):
+        for file in files:
+            if file.endswith(".pyd"):
+                target_path = os.path.join(_ROOT, file)
+                shutil.copy2(os.path.join(thtoolroot, file), target_path)
+                print("coping ", file, " -> ", target_path)
+        break
+    # TODO check whether copy dependency successfully
+
+def _mkdir(path: str) -> None:
+    if os.path.exists(path) and os.path.isdir(path):
+        shutil.rmtree(path)
+    os.makedirs(path)
+
+def get_fsl_dataset() -> None:
+    import window # c++ extension of thtool
+    _mkdir(os.path.join(_THDATASET_PATH, "image"))
+    _mkdir(os.path.join(_THDATASET_PATH, "label"))
 
     window.bind_guess()
-
     window.init_Gdiplus()
     try:
         game_start_status: Optional[bool] = None # False: not start, True: start, None: not checked
         counter: int = 0
         while True:
             try:
-                img = scene.get_scene() # raise BindError if th window closed
+                window.save_scene_img()
+                img = cv2.imread("C:/Windows/Temp/thtemp.bmp") # raise BindError if th window closed
                 label = {
                     "player": window.fsl_get_player(), # raise GameNotStartError if th-game not started
                     "enemies": window.fsl_get_enemies(),
@@ -43,14 +56,18 @@ def get_fsl_dataset():
                     game_start_status = True
 
                 if counter % 5 == 0:
-                    with open(os.path.join(thdataset_path, f"label/th10-fsl_{counter // 5}.json"), "w") as f:
+                    with open(os.path.join(_THDATASET_PATH, f"label/th10-fsl_{counter // 5}.json"), "w") as f:
                         f.write(json.dumps(label, indent=2))
 
-                    cv2.imwrite(f"{thdataset_path}/image/th10-fsl_{counter // 5}.jpg", img)
+                    cv2.imwrite(f"{_THDATASET_PATH}/image/th10-fsl_{counter // 5}.jpg", img)
 
             counter += 1
     except window.BindError:
         print("Checking touhou window closed")
-        exit(0)
+        return
     finally:
         window.free_Gdiplus()
+
+if __name__ == "__main__":
+    gain_dependency()
+    get_fsl_dataset()

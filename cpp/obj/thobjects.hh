@@ -38,7 +38,7 @@ namespace thtool::obj {
 
 class Player : public details::ThObject_<Player> {
     friend class details::ThObject_<Player>;
-    static constexpr f32::float32_type width{2}, height{2};
+    static constexpr f32::float32_type width{4}, height{4};
 public:
     Player() = delete;
     ~Player() = default;

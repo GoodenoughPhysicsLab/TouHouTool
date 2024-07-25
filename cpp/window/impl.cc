@@ -16,6 +16,7 @@ PYBIND11_MODULE(window, m) {
 
     m.def("init_Gdiplus", thtool::window::init_Gdiplus);
     m.def("free_Gdiplus", thtool::window::free_Gdiplus);
+    m.def("get_size", thtool::window::get_size);
     m.def("save_scene_img", thtool::window::save_scene_img);
     m.def("is_foreground", thtool::window::is_foreground);
 

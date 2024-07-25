@@ -50,4 +50,3 @@ fast_io/
 *.zip
 *.tar.*
 *.test.*
-dataset/scene.py

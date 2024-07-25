@@ -56,6 +56,7 @@ def main() -> None:
                 img = scene.get_scene() # raise BindError if th-window closed
                 game_elements = scene.GameElements() # raise GameNotStartError if game not start
             except window.GameNotStartError:
+                cv2.destroyAllWindows()
                 if game_start_status is not False:
                     print("Checking touhou game NOT start")
                     game_start_status = False
@@ -65,15 +66,15 @@ def main() -> None:
                     game_start_status = True
 
                 if args.draw:
-                    blank = np.zeros_like(img)
+                    blank = img.copy()#np.zeros_like(img)
 
                     # draw player
                     cv2.rectangle(
                         blank,
-                        (int(game_elements.player.get_x() + 184 - game_elements.player.get_width() / 2)
-                        , int(game_elements.player.get_y() - game_elements.player.get_height() / 2)),
-                        (int(game_elements.player.get_x() + 184 + game_elements.player.get_width() / 2)
-                        , int(game_elements.player.get_y() + game_elements.player.get_height() / 2)),
+                        (int(game_elements.player.get_x() + 224 - game_elements.player.get_width() / 2)
+                        , int(game_elements.player.get_y() + 15 - game_elements.player.get_height() / 2)),
+                        (int(game_elements.player.get_x() + 224 + game_elements.player.get_width() / 2)
+                        , int(game_elements.player.get_y() + 15 + game_elements.player.get_height() / 2)),
                         (255, 0, 0)
                     )
 
@@ -81,10 +82,10 @@ def main() -> None:
                     for enemy in game_elements.enemies:
                         cv2.rectangle(
                             blank,
-                            (int(enemy.get_x() + 184 - enemy.get_width() / 2)
-                            , int(enemy.get_y() - enemy.get_height() / 2)),
-                            (int(enemy.get_x() + 184 + enemy.get_width() / 2),
-                            int(enemy.get_y() + enemy.get_height() / 2)),
+                            (int(enemy.get_x() + 224 - enemy.get_width() / 2)
+                            , int(enemy.get_y() + 15 - enemy.get_height() / 2)),
+                            (int(enemy.get_x() + 224 + enemy.get_width() / 2)
+                            , int(enemy.get_y() + 15 + enemy.get_height() / 2)),
                             (0, 0, 255)
                         )
 
@@ -92,11 +93,11 @@ def main() -> None:
                     for enemy_bullet in game_elements.enemy_bullets:
                         cv2.rectangle(
                             blank,
-                            (int(enemy_bullet.get_x() + 184 - enemy_bullet.get_width() / 2)
-                            , int(enemy_bullet.get_y() - enemy_bullet.get_height() / 2)),
-                            (int(enemy_bullet.get_x() + 184 + enemy_bullet.get_width() / 2)
-                             , int(enemy_bullet.get_y() + enemy_bullet.get_height() / 2)),
-                             (0, 0, 255)
+                            (int(enemy_bullet.get_x() + 224 - enemy_bullet.get_width() / 2)
+                            , int(enemy_bullet.get_y() + 15 - enemy_bullet.get_height() / 2)),
+                            (int(enemy_bullet.get_x() + 224 + enemy_bullet.get_width() / 2)
+                            , int(enemy_bullet.get_y() + 15 + enemy_bullet.get_height() / 2)),
+                            (0, 0, 255)
                         )
 
                     # draw enemy_lasers
@@ -106,37 +107,36 @@ def main() -> None:
                         return res_x, res_y
 
                     for enemy_laser in game_elements.enemy_lasers:
-                        cy = enemy_laser.get_y() + enemy_laser.get_height() / 2
                         _x1, _y1 = _rotate_point(
-                            184 + enemy_laser.get_x(), cy,
-                            184 + enemy_laser.get_x() - enemy_laser.get_width() / 2,
+                            enemy_laser.get_x(), enemy_laser.get_y(),
+                            enemy_laser.get_x() - enemy_laser.get_width() / 2,
                             enemy_laser.get_y(),
                             enemy_laser.get_radian() - math.pi / 2
                         )
                         _x2, _y2 = _rotate_point(
-                            184 + enemy_laser.get_x(), cy,
-                            184 + enemy_laser.get_x() + enemy_laser.get_width() / 2,
+                            enemy_laser.get_x(), enemy_laser.get_y(),
+                            enemy_laser.get_x() + enemy_laser.get_width() / 2,
                             enemy_laser.get_y(),
                             enemy_laser.get_radian() - math.pi / 2
                         )
                         _x3, _y3 = _rotate_point(
-                            184 + enemy_laser.get_x(), cy,
-                            184 + enemy_laser.get_x() + enemy_laser.get_width() / 2,
+                            enemy_laser.get_x(), enemy_laser.get_y(),
+                            enemy_laser.get_x() + enemy_laser.get_width() / 2,
                             enemy_laser.get_y() + enemy_laser.get_height(),
                             enemy_laser.get_radian() - math.pi / 2
                         )
                         _x4, _y4 = _rotate_point(
-                            184 + enemy_laser.get_x(), cy,
-                            184 + enemy_laser.get_x() - enemy_laser.get_width() / 2,
+                            enemy_laser.get_x(), enemy_laser.get_y(),
+                            enemy_laser.get_x() - enemy_laser.get_width() / 2,
                             enemy_laser.get_y() + enemy_laser.get_height(),
                             enemy_laser.get_radian() - math.pi / 2
                         )
 
                         pts = np.array([
-                            [_x1, _y1],
-                            [_x2, _y2],
-                            [_x3, _y3],
-                            [_x4, _y4],
+                            [224 + _x1, 15 + _y1],
+                            [224 + _x2, 15 + _y2],
+                            [224 + _x3, 15 + _y3],
+                            [224 + _x4, 15 + _y4],
                         ], dtype=np.int32)
                         cv2.polylines(blank, [pts], True, (0, 0, 255))
 
@@ -144,11 +144,11 @@ def main() -> None:
                     for resource in game_elements.resources:
                         cv2.rectangle(
                             blank,
-                            (int(resource.get_x() + 184 - resource.get_width() / 2)
-                            , int(resource.get_y() - resource.get_height() / 2)),
-                            (int(resource.get_x() + 184 + resource.get_width() / 2)
-                             , int(resource.get_y()+ resource.get_height() / 2)),
-                             (0, 255, 0)
+                            (int(resource.get_x() + 224 - resource.get_width() / 2)
+                            , int(resource.get_y() + 15 - resource.get_height() / 2)),
+                            (int(resource.get_x() + 224 + resource.get_width() / 2)
+                            , int(resource.get_y() + 15 + resource.get_height() / 2)),
+                            (0, 255, 0)
                         )
 
                     cv2.imshow("thtool", blank)
@@ -157,6 +157,7 @@ def main() -> None:
         print("Checking touhou window closed")
         exit(0)
     finally:
+        kb_control.release_all()
         cv2.destroyAllWindows()
         window.free_Gdiplus()
 

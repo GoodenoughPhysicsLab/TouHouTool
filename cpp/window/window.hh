@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <Windows.h>
+#include <tuple>
 #include <windef.h>
 #include <winuser.h>
 #include <gdiplus.h>
@@ -49,28 +50,25 @@ inline BOOL GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
 
 namespace thtool::window {
 
-[[nodiscard]] inline auto& get_size() {
-    struct TH_Screen {
-        decltype(tagRECT::right) width = 0;
-        decltype(tagRECT::bottom) height = 0;
-    };
-    static TH_Screen res{};
+[[nodiscard]] inline auto get_size() {
+    static decltype(tagRECT::right) width{};
+    static decltype(tagRECT::bottom) height{};
 
-    if (res.height != 0 && res.width != 0) {
-        return res;
+    if (height != 0 && width != 0) {
+        return ::std::make_tuple(width, height);
     }
 
     RECT rect;
     if (GetClientRect(thtool::bind::TH_hwnd.value(), &rect)) {
-        res.width = rect.right;
-        res.height = rect.bottom;
-        if (res.width == 0 || res.height == 0) {
+        width = rect.right;
+        height = rect.bottom;
+        if (width == 0 || height == 0) {
             PyErr_SetString(PyExc_RuntimeError,
                     "get screen width or height fail, try to click your TouHou window to solve it");
             throw py::error_already_set();
         }
     }
-    return res;
+    return ::std::make_tuple(width, height);
 }
 
 #if 0

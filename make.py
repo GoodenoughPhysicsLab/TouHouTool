@@ -31,19 +31,23 @@ if __name__ == "__main__":
                                     dir2.startswith("bdist.") or \
                                     dir2.startswith("temp."):
                                 shutil.rmtree(os.path.join(root2, dir2))
+                                print(f"Removing {os.path.join(root2, dir2)}")
                         break
 
                 else:
                     shutil.rmtree(os.path.join(root, dir))
+                    print(f"Removing {os.path.join(root, dir)}")
 
             if dir == "dist" or dir.endswith(".egg-info"):
                 shutil.rmtree(os.path.join(root, dir))
+                print(f"Removing {os.path.join(root, dir)}")
         break
 
     for root, _, files in os.walk(os.path.join(ROOT, "thtool")):
         for file in files:
             if file.endswith(".pyd"):
                 os.remove(os.path.join(root, file))
+                print(f"Removing {os.path.join(root, file)}")
         break
 
     if not os.path.exists(os.path.join(ROOT, "cpp/pybind11")) and \
