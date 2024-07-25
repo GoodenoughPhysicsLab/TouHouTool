@@ -270,7 +270,7 @@ inline auto fsl_get_enemy_lasers() {
                               &nbr);
             // res.emplace_back(x, y, w / 2.0f, h, arc);
             res.emplace_back(x, y, w, h, arc);
-            if (ebx == NULL) {
+            if (ebx == 0) {
                 break;
             }
             esi = ebx;

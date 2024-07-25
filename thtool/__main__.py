@@ -66,7 +66,8 @@ def main() -> None:
                     game_start_status = True
 
                 if args.draw:
-                    blank = img.copy()#np.zeros_like(img)
+                    # blank = img.copy() # debug
+                    blank = np.zeros_like(img)
 
                     # draw player
                     cv2.rectangle(

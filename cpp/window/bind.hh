@@ -18,6 +18,37 @@
 
 namespace py = pybind11;
 
+namespace thtool::bind {
+
+enum class ThGame {
+    unset = 0, // no binded th-game
+    unknown,
+
+    hmx, /* the Embodiment of Scarlet Devil */
+    yym, /* Perfect Cherry Blossom */
+    yyc, /* Imperishable Night */
+#if 0
+    hyz, /* Phantasmagoria of Flower View */
+#endif
+    fsl, /* Mountain of Faith */
+    dld, /* Subterranean Animism */
+    xlc, /* Undefined Fantastic Object */
+    slm, /* Ten Desires */
+    hzc, /* Double Dealing Character */
+    gzz, /* Legacy of Lunatic Kingdom */
+    tkz, /* Hidden Star in Four Seasons */
+    gxs, /* Wily Beast and Weakest Creature */
+    hld, /* Unconnected Marketeers */
+};
+
+static ThGame TH_game{ThGame::unset};
+
+inline ThGame get_th_game() noexcept {
+    return TH_game;
+}
+
+} // namespace thtool::bind
+
 namespace thtool::details {
 
 [[nodiscard]] inline ::std::optional<::std::string> get_hwnd_title(HWND hwnd) noexcept {
@@ -29,7 +60,7 @@ namespace thtool::details {
 }
 
 // return title if true else return nullopt
-[[nodiscard]] inline ::std::optional<::std::string> guess_is_th_window(::std::string title) noexcept {
+[[nodiscard]] inline ::std::optional<bind::ThGame> guess_is_th_window(::std::string title) noexcept {
     const ::std::string_view th_titles[] = {
 #if 0
         "Highly Responsive to Prayers",
@@ -41,7 +72,9 @@ namespace thtool::details {
         "the Embodiment of Scarlet Devil",
         "Perfect Cherry Blossom",
         "Imperishable Night",
+#if 0
         "Phantasmagoria of Flower View",
+#endif
         "Mountain of Faith",
         "Subterranean Animism",
         "Undefined Fantastic Object",
@@ -53,10 +86,12 @@ namespace thtool::details {
         "Unconnected Marketeers",
     };
 
+    int th_game = static_cast<int>(bind::ThGame::hmx);
     for (auto th_title : th_titles) {
         if (title.find(th_title) != ::std::string::npos) {
-            return title;
+            return static_cast<bind::ThGame>(th_game);
         }
+        ++th_game;
     }
     return ::std::nullopt;
 }
@@ -67,7 +102,7 @@ extern "C" inline BOOL CALLBACK print_all_windows_proc(HWND hwnd, LPARAM lParam)
         return TRUE;
     }
 
-    if (guess_is_th_window(title.value())) {
+    if (guess_is_th_window(title.value()).has_value()) {
         fast_io::io::print("[[ GUESS ]] ");
     }
     fast_io::io::println("window title: ", title.value());
@@ -80,7 +115,7 @@ extern "C" inline BOOL CALLBACK print_all_windows_proc_only_guess(HWND hwnd, LPA
         return TRUE;
     }
 
-    if (guess_is_th_window(title.value())) {
+    if (guess_is_th_window(title.value()).has_value()) {
         fast_io::io::println("[[ GUESS ]] window title: ", title.value());
     }
     return TRUE;
@@ -122,7 +157,9 @@ inline void bind_foreground() {
     if (!title_name.has_value()) {
         throw BindError("bind to foreground window fail");
     }
-    PyObject_Print(PyUnicode_FromFormat("Successfully bind to foreground window: %s\n", title_name.value().c_str()), stdout, Py_PRINT_RAW);
+    PyObject_Print(PyUnicode_FromFormat("Successfully bind to foreground window: %s\n",
+                                        title_name.value().c_str()), stdout, Py_PRINT_RAW);
+    TH_game = ThGame::unknown;
 }
 
 } // namespace thtool::bind
@@ -135,9 +172,12 @@ extern "C" inline BOOL CALLBACK bind_guess_proc(HWND hwnd, LPARAM lParam) {
         return TRUE;
     }
 
-    if (guess_is_th_window(title.value())) {
+    ::std::optional<bind::ThGame> guess_game = details::guess_is_th_window(title.value());
+    if (guess_game.has_value()) {
         bind::TH_hwnd = hwnd;
-        PyObject_Print(PyUnicode_FromFormat("Successfully bind to guessed window: %s\n", title.value().c_str()), stdout, Py_PRINT_RAW);
+        bind::TH_game = guess_game.value();
+        PyObject_Print(PyUnicode_FromFormat("Successfully bind to guessed window: %s\n",
+                                            title.value().c_str()), stdout, Py_PRINT_RAW);
         return FALSE;
     }
     return TRUE;
@@ -159,7 +199,9 @@ inline void bind_title(py::str title) {
     if (TH_hwnd.value() == NULL) {
         throw BindError("no match window title");
     }
-    PyObject_Print(PyUnicode_FromFormat("Successfully bind to window: %s\n", title.cast<::std::string>().c_str()), stdout, Py_PRINT_RAW);
+    PyObject_Print(PyUnicode_FromFormat("Successfully bind to window: %s\n",
+                                        title.cast<::std::string>().c_str()), stdout, Py_PRINT_RAW);
+    TH_game = ThGame::unknown;
 }
 
 } // namespace thtool::bind

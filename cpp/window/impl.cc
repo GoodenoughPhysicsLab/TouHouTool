@@ -9,6 +9,22 @@ PYBIND11_MODULE(window, m) {
     py::register_exception<thtool::bind::BindError>(m, "BindError");
     py::register_exception<thtool::readmem::GameNotStartError>(m, "GameNotStartError");
 
+    py::enum_<thtool::bind::ThGame>(m, "ThGame")
+        .value("hmx", thtool::bind::ThGame::hmx)
+        .value("yym", thtool::bind::ThGame::yym)
+        .value("yyc", thtool::bind::ThGame::yyc)
+        .value("fsl", thtool::bind::ThGame::fsl)
+        .value("dld", thtool::bind::ThGame::dld)
+        .value("xlc", thtool::bind::ThGame::xlc)
+        .value("slm", thtool::bind::ThGame::slm)
+        .value("hzc", thtool::bind::ThGame::hzc)
+        .value("gzz", thtool::bind::ThGame::gzz)
+        .value("tkz", thtool::bind::ThGame::tkz)
+        .value("gxs", thtool::bind::ThGame::gxs)
+        .value("hld", thtool::bind::ThGame::hld)
+        .export_values();
+
+    m.def("get_th_game", thtool::bind::get_th_game);
     m.def("print_all_windows", thtool::bind::print_all_windows, py::arg("only_guess")=false);
     m.def("bind_foreground", thtool::bind::bind_foreground);
     m.def("bind_guess", thtool::bind::bind_guess);

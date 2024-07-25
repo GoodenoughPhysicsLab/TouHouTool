@@ -25,16 +25,31 @@ def get_scene() -> np.ndarray:
     return cv2.imread("C:/Windows/Temp/thtemp.bmp")
 
 def get_player() -> obj.Player:
-    return obj.Player(*window.fsl_get_player())
+    if window.get_th_game() == window.ThGame.fsl:
+        return obj.Player(*window.fsl_get_player())
+    pass
+    raise RuntimeError("don't support in this version")
 
 def get_enemies() -> List[obj.Enemy]:
-    return [obj.Enemy(*enemy) for enemy in window.fsl_get_enemies()]
+    if window.get_th_game() == window.ThGame.fsl:
+        return [obj.Enemy(*enemy) for enemy in window.fsl_get_enemies()]
+    pass
+    raise RuntimeError("don't support in this version")
 
 def get_enemy_bullets() -> List[obj.EnemyBullet]:
-    return [obj.EnemyBullet(*bullet) for bullet in window.fsl_get_enemy_bullets()]
+    if window.get_th_game() == window.ThGame.fsl:
+        return [obj.EnemyBullet(*bullet) for bullet in window.fsl_get_enemy_bullets()]
+    pass
+    raise RuntimeError("don't support in this version")
 
 def get_enemy_lasers() -> List[obj.EnemyLaser]:
-    return [obj.EnemyLaser(*laser) for laser in window.fsl_get_enemy_lasers()]
+    if window.get_th_game() == window.ThGame.fsl:
+        return [obj.EnemyLaser(*laser) for laser in window.fsl_get_enemy_lasers()]
+    pass
+    raise RuntimeError("don't support in this version")
 
 def get_resources() -> List[obj.Resource]:
-    return [obj.Resource(*resource) for resource in window.fsl_get_resources()]
+    if window.get_th_game() == window.ThGame.fsl:
+        return [obj.Resource(*resource) for resource in window.fsl_get_resources()]
+    pass
+    raise RuntimeError("don't support in this version")
