@@ -160,15 +160,15 @@ def generate_yolo() -> None:
 
 def train(valid: bool = False) -> None:
     from ultralytics import YOLO
-    model = YOLO("yolov8m-obb.pt")
+    if not os.path.exists("runs"):
+        model = YOLO("yolov8m-obb.pt")
+    else:
+        model = YOLO("runs/obb/train/weights/best.pt")
     model.train(data=os.path.join(_THDATASET_PATH, "yolo", "thdataset.yaml"), epochs=16, imgsz=640, batch=2)
     if valid:
         model.val()
 
 if __name__ == "__main__":
-    if os.path.exists("runs") and os.path.isdir("runs"):
-        shutil.rmtree("runs")
-        print("removing runs/")
     generate_yolo()
     print("train START")
     train()

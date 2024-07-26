@@ -5,8 +5,8 @@ import shutil
 
 from typing import Optional
 
-_THDATASET_PATH = ""
 _ROOT = os.path.dirname(os.path.abspath(__file__))
+_THDATASET_PATH: Optional[str] = None
 for _, dirs, _ in os.walk(_ROOT):
     for dir in dirs:
         if dir.startswith("thdataset"):
