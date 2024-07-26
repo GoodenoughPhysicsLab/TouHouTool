@@ -102,9 +102,9 @@ def main() -> None:
                         )
 
                     # draw enemy_lasers
-                    def _rotate_point(cx, cy, x, y, radian):
-                        res_x = cx + (x - cx) * math.cos(radian) - (y - cy) * math.sin(radian)
-                        res_y = cy + (x - cx) * math.sin(radian) + (y - cy) * math.cos(radian)
+                    def _rotate_point(x_center, y_center, x, y, radian):
+                        res_x = x_center + (x - x_center) * math.cos(radian) - (y - y_center) * math.sin(radian)
+                        res_y = y_center + (x - x_center) * math.sin(radian) + (y - y_center) * math.cos(radian)
                         return res_x, res_y
 
                     for enemy_laser in game_elements.enemy_lasers:

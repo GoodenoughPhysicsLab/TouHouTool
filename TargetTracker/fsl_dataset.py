@@ -5,8 +5,15 @@ import shutil
 
 from typing import Optional
 
+_THDATASET_PATH = ""
 _ROOT = os.path.dirname(os.path.abspath(__file__))
-_THDATASET_PATH = os.path.join(_ROOT, "thdataset")
+for _, dirs, _ in os.walk(_ROOT):
+    for dir in dirs:
+        if dir.startswith("thdataset"):
+            _THDATASET_PATH = os.path.join(_ROOT, dir)
+    break
+if _THDATASET_PATH is None:
+    raise RuntimeError("Can't find thdataset/")
 
 def gain_dependency() -> None:
     for thtoolroot, _, files in os.walk(os.path.join(os.path.dirname(_ROOT), "thtool")):
@@ -21,10 +28,14 @@ def gain_dependency() -> None:
 def _mkdir(path: str) -> None:
     if os.path.exists(path) and os.path.isdir(path):
         shutil.rmtree(path)
+        print("removing ", path)
     os.makedirs(path)
+    print("create ", path)
 
 def get_fsl_dataset() -> None:
     import window # c++ extension of thtool
+                  # DO NOT import it in the head of this file
+                  # because `window` will be updated `gain_dependency`
     _mkdir(os.path.join(_THDATASET_PATH, "image"))
     _mkdir(os.path.join(_THDATASET_PATH, "label"))
 

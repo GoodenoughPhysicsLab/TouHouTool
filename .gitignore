@@ -5,6 +5,7 @@ dist/
 __pycache__/
 *.egg-info/
 thdataset/
+runs/
 
 pybind11/
 fast_io/
@@ -50,3 +51,4 @@ fast_io/
 *.zip
 *.tar.*
 *.test.*
+*.pt
