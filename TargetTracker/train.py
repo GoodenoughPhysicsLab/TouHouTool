@@ -2,7 +2,7 @@ import os
 import json
 import math
 import shutil
-from fsl_dataset import _mkdir, _THDATASET_PATH
+from fsl_dataset import _mkdir, _THDATASET_PATH, _ROOT
 
 def _rotate_point(x_center, y_center, x, y, radian):
     res_x = x_center + (x - x_center) * math.cos(radian) - (y - y_center) * math.sin(radian)
@@ -163,13 +163,19 @@ def train(valid: bool = False) -> None:
     if not os.path.exists("runs"):
         model = YOLO("yolov8m-obb.pt")
     else:
-        model = YOLO("runs/obb/train/weights/best.pt")
+        fold_count = len(list(os.walk(os.path.join("runs", "obb")))[0][1])
+        if fold_count == 1:
+            fold_count = ""
+        model = YOLO(os.path.join(
+            os.path.dirname(_ROOT), "runs", "obb", f"train{fold_count}", "weights", "best.pt")
+        )
     model.train(data=os.path.join(_THDATASET_PATH, "yolo", "thdataset.yaml"), epochs=16, imgsz=640, batch=2)
     if valid:
         model.val()
 
 if __name__ == "__main__":
-    generate_yolo()
+    if not os.path.exists(os.path.join(_THDATASET_PATH, "yolo")):
+        generate_yolo()
     print("train START")
     train()
     print("train END")

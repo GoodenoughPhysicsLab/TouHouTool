@@ -1,4 +1,3 @@
-import math
 import argparse
 import cv2
 import numpy as np
@@ -54,7 +53,11 @@ def main() -> None:
 
             try:
                 img = scene.get_scene() # raise BindError if th-window closed
-                game_elements = scene.GameElements() # raise GameNotStartError if game not start
+                player_point = scene.get_player_point() # raise GameNotStartError if game not start
+                enemy_points = scene.get_enemy_points()
+                enemy_bullet_points = scene.get_enemy_bullet_points()
+                enemy_laser_points = scene.get_enemy_laser_points()
+                resource_points = scene.get_resource_points()
             except window.GameNotStartError:
                 cv2.destroyAllWindows()
                 if game_start_status is not False:
@@ -70,87 +73,24 @@ def main() -> None:
                     blank = np.zeros_like(img)
 
                     # draw player
-                    cv2.rectangle(
-                        blank,
-                        (int(game_elements.player.get_x() + 224 - game_elements.player.get_width() / 2)
-                        , int(game_elements.player.get_y() + 15 - game_elements.player.get_height() / 2)),
-                        (int(game_elements.player.get_x() + 224 + game_elements.player.get_width() / 2)
-                        , int(game_elements.player.get_y() + 15 + game_elements.player.get_height() / 2)),
-                        (255, 0, 0)
-                    )
+                    cv2.rectangle(blank, *player_point, (255, 0, 0))
 
                     #draw enemies
-                    for enemy in game_elements.enemies:
-                        cv2.rectangle(
-                            blank,
-                            (int(enemy.get_x() + 224 - enemy.get_width() / 2)
-                            , int(enemy.get_y() + 15 - enemy.get_height() / 2)),
-                            (int(enemy.get_x() + 224 + enemy.get_width() / 2)
-                            , int(enemy.get_y() + 15 + enemy.get_height() / 2)),
-                            (0, 0, 255)
-                        )
+                    for enemy_point in enemy_points:
+                        cv2.rectangle(blank, *enemy_point, (0, 0, 255))
 
                     # draw enemy_bullets
-                    for enemy_bullet in game_elements.enemy_bullets:
-                        cv2.rectangle(
-                            blank,
-                            (int(enemy_bullet.get_x() + 224 - enemy_bullet.get_width() / 2)
-                            , int(enemy_bullet.get_y() + 15 - enemy_bullet.get_height() / 2)),
-                            (int(enemy_bullet.get_x() + 224 + enemy_bullet.get_width() / 2)
-                            , int(enemy_bullet.get_y() + 15 + enemy_bullet.get_height() / 2)),
-                            (0, 0, 255)
-                        )
+                    for enemy_bullet_point in enemy_bullet_points:
+                        cv2.rectangle(blank, *enemy_bullet_point, (0, 0, 255))
 
                     # draw enemy_lasers
-                    def _rotate_point(x_center, y_center, x, y, radian):
-                        res_x = x_center + (x - x_center) * math.cos(radian) - (y - y_center) * math.sin(radian)
-                        res_y = y_center + (x - x_center) * math.sin(radian) + (y - y_center) * math.cos(radian)
-                        return res_x, res_y
-
-                    for enemy_laser in game_elements.enemy_lasers:
-                        _x1, _y1 = _rotate_point(
-                            enemy_laser.get_x(), enemy_laser.get_y(),
-                            enemy_laser.get_x() - enemy_laser.get_width() / 2,
-                            enemy_laser.get_y(),
-                            enemy_laser.get_radian() - math.pi / 2
-                        )
-                        _x2, _y2 = _rotate_point(
-                            enemy_laser.get_x(), enemy_laser.get_y(),
-                            enemy_laser.get_x() + enemy_laser.get_width() / 2,
-                            enemy_laser.get_y(),
-                            enemy_laser.get_radian() - math.pi / 2
-                        )
-                        _x3, _y3 = _rotate_point(
-                            enemy_laser.get_x(), enemy_laser.get_y(),
-                            enemy_laser.get_x() + enemy_laser.get_width() / 2,
-                            enemy_laser.get_y() + enemy_laser.get_height(),
-                            enemy_laser.get_radian() - math.pi / 2
-                        )
-                        _x4, _y4 = _rotate_point(
-                            enemy_laser.get_x(), enemy_laser.get_y(),
-                            enemy_laser.get_x() - enemy_laser.get_width() / 2,
-                            enemy_laser.get_y() + enemy_laser.get_height(),
-                            enemy_laser.get_radian() - math.pi / 2
-                        )
-
-                        pts = np.array([
-                            [224 + _x1, 15 + _y1],
-                            [224 + _x2, 15 + _y2],
-                            [224 + _x3, 15 + _y3],
-                            [224 + _x4, 15 + _y4],
-                        ], dtype=np.int32)
+                    for enemy_laser_point in enemy_laser_points:
+                        pts = np.array(enemy_laser_point, dtype=np.int32)
                         cv2.polylines(blank, [pts], True, (0, 0, 255))
 
                     # draw resources
-                    for resource in game_elements.resources:
-                        cv2.rectangle(
-                            blank,
-                            (int(resource.get_x() + 224 - resource.get_width() / 2)
-                            , int(resource.get_y() + 15 - resource.get_height() / 2)),
-                            (int(resource.get_x() + 224 + resource.get_width() / 2)
-                            , int(resource.get_y() + 15 + resource.get_height() / 2)),
-                            (0, 255, 0)
-                        )
+                    for resource_point in resource_points:
+                        cv2.rectangle(blank, *resource_point, (0, 255, 0))
 
                     cv2.imshow("thtool", blank)
                     cv2.waitKey(1)

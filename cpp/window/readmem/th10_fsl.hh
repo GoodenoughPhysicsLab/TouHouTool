@@ -15,6 +15,12 @@
 
 namespace thtool::readmem {
 
+/* Note:
+ *   this file get position by read memory
+ *   but, it's not the screen position
+ *   the code thansform it to screen position is in thtool/scene.py
+ */
+
 #ifdef _MSC_VER
 #pragma warning(disable: 4312)
 #endif

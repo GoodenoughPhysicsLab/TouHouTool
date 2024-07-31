@@ -6,13 +6,13 @@ import shutil
 from typing import Optional
 
 _ROOT = os.path.dirname(os.path.abspath(__file__))
-_THDATASET_PATH: Optional[str] = None
+_THDATASET_PATH: str = ""
 for _, dirs, _ in os.walk(_ROOT):
     for dir in dirs:
         if dir.startswith("thdataset"):
             _THDATASET_PATH = os.path.join(_ROOT, dir)
     break
-if _THDATASET_PATH is None:
+if _THDATASET_PATH == "":
     raise RuntimeError("Can't find thdataset/")
 
 def gain_dependency() -> None:
@@ -25,12 +25,17 @@ def gain_dependency() -> None:
         break
     # TODO check whether copy dependency successfully
 
-def _mkdir(path: str) -> None:
-    if os.path.exists(path) and os.path.isdir(path):
-        shutil.rmtree(path)
-        print("removing ", path)
-    os.makedirs(path)
-    print("create ", path)
+def _mkdir(path: str, delete: bool=True) -> None:
+    if delete:
+        if os.path.exists(path) and os.path.isdir(path):
+            shutil.rmtree(path)
+            print("remove ", path)
+        os.makedirs(path)
+        print("create ", path)
+    else:
+        if not os.path.exists(path) and not os.path.isdir(path):
+            os.makedirs(path)
+            print("create ", path)
 
 def get_fsl_dataset() -> None:
     import window # c++ extension of thtool
