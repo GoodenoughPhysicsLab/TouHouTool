@@ -1,3 +1,4 @@
+import os
 import argparse
 import cv2
 import numpy as np
@@ -45,6 +46,7 @@ def main() -> None:
     if args.always_shoot:
         kb_control.send(kb_control.Behavior.shoot, deltatime=None, in_queue=True)
 
+    THTOOL_ROOT = os.path.dirname(os.path.abspath(__file__))
     game_start_status: Optional[bool] = None # False: not start, True: start, None: not checked
     window.init_Gdiplus()
     try:
