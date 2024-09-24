@@ -161,7 +161,7 @@ def generate_yolo() -> None:
 def train(valid: bool = False) -> None:
     from ultralytics import YOLO
     if not os.path.exists("runs"):
-        model = YOLO("yolov8m-obb.pt")
+        model = YOLO("yolov8s-obb.pt")
     else:
         fold_count = len(list(os.walk(os.path.join("runs", "obb")))[0][1])
         if fold_count == 1:
@@ -169,7 +169,7 @@ def train(valid: bool = False) -> None:
         model = YOLO(os.path.join(
             os.path.dirname(_ROOT), "runs", "obb", f"train{fold_count}", "weights", "best.pt")
         )
-    model.train(data=os.path.join(_THDATASET_PATH, "yolo", "thdataset.yaml"), epochs=16, imgsz=640, batch=2)
+    model.train(data=os.path.join(_THDATASET_PATH, "yolo", "thdataset.yaml"), epochs=2, imgsz=640, batch=4)
     if valid:
         model.val()
 
