@@ -8,9 +8,6 @@ thdataset/
 runs/
 TargetTracker/scene.py
 
-pybind11/
-fast_io/
-
 # Prerequisites
 *.d
 

@@ -3,7 +3,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(obj, m) {
+PYBIND11_MODULE(objects, m) {
     py::class_<thtool::obj::ThObject>(m, "ThObject")
         .def(py::init<>());
 

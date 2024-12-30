@@ -1,7 +1,7 @@
 import math
 import cv2
 import numpy as np
-from . import obj
+from . import objects
 from . import window
 from typing import List, Tuple
 
@@ -29,10 +29,10 @@ def get_scene() -> np.ndarray:
 #   the position window module readed is NOT the screen position
 #   this file will transform them to screen position
 
-def get_player() -> obj.Player:
+def get_player() -> objects.Player:
     if window.get_th_game() == window.ThGame.fsl:
         x, y = window.fsl_get_player()
-        return obj.Player(x + 224, y + 15)
+        return objects.Player(x + 224, y + 15)
     pass
     raise RuntimeError("don't support in this version")
 
@@ -46,11 +46,11 @@ def get_player_point() -> Tuple[Tuple[int, int], Tuple[int, int]]:
     pass
     raise RuntimeError("don't support in this version")
 
-def get_enemies() -> List[obj.Enemy]:
+def get_enemies() -> List[objects.Enemy]:
     if window.get_th_game() == window.ThGame.fsl:
         res: list = []
         for x, y, width, height in window.fsl_get_enemies():
-            res.append(obj.Enemy(x + 224, y + 15, width, height))
+            res.append(objects.Enemy(x + 224, y + 15, width, height))
         return res
     pass
     raise RuntimeError("don't support in this version")
@@ -67,11 +67,11 @@ def get_enemy_points() -> List[Tuple[Tuple[int, int], Tuple[int, int]]]:
     pass
     raise RuntimeError("don't support in this version")
 
-def get_enemy_bullets() -> List[obj.EnemyBullet]:
+def get_enemy_bullets() -> List[objects.EnemyBullet]:
     if window.get_th_game() == window.ThGame.fsl:
         res: list = []
         for x, y, width, height, dx, dy in window.fsl_get_enemy_bullets():
-            res.append(obj.EnemyBullet(x + 224, y + 15, width, height, dx, dy))
+            res.append(objects.EnemyBullet(x + 224, y + 15, width, height, dx, dy))
         return res
     pass
     raise RuntimeError("don't support in this version")
@@ -88,11 +88,11 @@ def get_enemy_bullet_points() -> List[Tuple[Tuple[int, int], Tuple[int, int]]]:
     pass
     raise RuntimeError("don't support in this version")
 
-def get_enemy_lasers() -> List[obj.EnemyLaser]:
+def get_enemy_lasers() -> List[objects.EnemyLaser]:
     if window.get_th_game() == window.ThGame.fsl:
         res: list = []
         for x, y, width, height, arc in window.fsl_get_enemy_lasers():
-            res.append(obj.EnemyLaser(x + 224, y + 15, width, height, arc))
+            res.append(objects.EnemyLaser(x + 224, y + 15, width, height, arc))
         return res
     pass
     raise RuntimeError("don't support in this version")
@@ -137,11 +137,11 @@ def get_enemy_laser_points() \
     pass
     raise RuntimeError("don't support in this version")
 
-def get_resources() -> List[obj.Resource]:
+def get_resources() -> List[objects.Resource]:
     if window.get_th_game() == window.ThGame.fsl:
         res: list = []
         for x, y in window.fsl_get_resources():
-            res.append(obj.Resource(x + 224, y + 15))
+            res.append(objects.Resource(x + 224, y + 15))
         return res
     pass
     raise RuntimeError("don't support in this version")

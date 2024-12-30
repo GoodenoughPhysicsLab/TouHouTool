@@ -1,16 +1,16 @@
 #pragma once
 
+#include <cstdint>
+#include <iostream>
 #include <string>
 #include <optional>
-#include <Windows.h>
+#include <windows.h>
 #include <string_view>
 #include <windef.h>
 #include <winnt.h>
 #include <winscard.h>
 #include <winuser.h>
-#include "../fast_io/fast_io.h"
-#include "../fast_io/fast_io_dsal/string_view.h"
-#include "pybind11/pytypes.h"
+#include <pybind11/pytypes.h>
 #include <Python.h>
 #include <pybind11/pybind11.h>
 
@@ -20,25 +20,24 @@ namespace py = pybind11;
 
 namespace thtool::bind {
 
-enum class ThGame {
+enum class ThGame : ::std::uint32_t {
     unset = 0, // no binded th-game
-    unknown,
-
-    hmx, /* the Embodiment of Scarlet Devil */
-    yym, /* Perfect Cherry Blossom */
-    yyc, /* Imperishable Night */
 #if 0
-    hyz, /* Phantasmagoria of Flower View */
+    hmx, /* the Embodiment of Scarlet Devil */
 #endif
-    fsl, /* Mountain of Faith */
-    dld, /* Subterranean Animism */
-    xlc, /* Undefined Fantastic Object */
-    slm, /* Ten Desires */
-    hzc, /* Double Dealing Character */
-    gzz, /* Legacy of Lunatic Kingdom */
-    tkz, /* Hidden Star in Four Seasons */
-    gxs, /* Wily Beast and Weakest Creature */
-    hld, /* Unconnected Marketeers */
+    yym = 7, /* Perfect Cherry Blossom */
+    yyc = 8, /* Imperishable Night */
+    hyz = 9, /* Phantasmagoria of Flower View */
+    fsl = 10, /* Mountain of Faith */
+    dld = 11, /* Subterranean Animism */
+    xlc = 12, /* Undefined Fantastic Object */
+    slm = 13, /* Ten Desires */
+    hzc = 14, /* Double Dealing Character */
+    gzz = 15, /* Legacy of Lunatic Kingdom */
+    tkz = 16, /* Hidden Star in Four Seasons */
+    gxs = 17, /* Wily Beast and Weakest Creature */
+    hld = 18, /* Unconnected Marketeers */
+    unknown,
 };
 
 static ThGame TH_game{ThGame::unset};
@@ -68,13 +67,11 @@ namespace thtool::details {
         "Phantasmagoria of Dim.Dream",
         "Lotus Land Story",
         "Mystic Square",
-#endif
         "the Embodiment of Scarlet Devil",
+#endif
         "Perfect Cherry Blossom",
         "Imperishable Night",
-#if 0
         "Phantasmagoria of Flower View",
-#endif
         "Mountain of Faith",
         "Subterranean Animism",
         "Undefined Fantastic Object",
@@ -86,7 +83,7 @@ namespace thtool::details {
         "Unconnected Marketeers",
     };
 
-    int th_game = static_cast<int>(bind::ThGame::hmx);
+    int th_game = static_cast<int>(bind::ThGame::yym);
     for (auto th_title : th_titles) {
         if (title.find(th_title) != ::std::string::npos) {
             return static_cast<bind::ThGame>(th_game);
@@ -103,9 +100,9 @@ extern "C" inline BOOL CALLBACK print_all_windows_proc(HWND hwnd, LPARAM lParam)
     }
 
     if (guess_is_th_window(title.value()).has_value()) {
-        fast_io::io::print("[[ GUESS ]] ");
+        ::std::cout << "[[ GUESS ]] ";
     }
-    fast_io::io::println("window title: ", title.value());
+    ::std::cout << "window title: " << title.value();
     return TRUE;
 }
 
@@ -116,7 +113,7 @@ extern "C" inline BOOL CALLBACK print_all_windows_proc_only_guess(HWND hwnd, LPA
     }
 
     if (guess_is_th_window(title.value()).has_value()) {
-        fast_io::io::println("[[ GUESS ]] window title: ", title.value());
+        ::std::cout << "[[ GUESS ]] window title: " << title.value();
     }
     return TRUE;
 }
@@ -126,9 +123,9 @@ extern "C" inline BOOL CALLBACK print_all_windows_proc_only_guess(HWND hwnd, LPA
 namespace thtool::bind {
 
 class BindError : public ::std::exception {
-    fast_io::string_view err_msg;
+    ::std::string_view err_msg;
 public:
-    BindError(fast_io::string_view msg) {
+    BindError(::std::string_view msg) {
         this->err_msg = msg;
     }
 
@@ -157,8 +154,7 @@ inline void bind_foreground() {
     if (!title_name.has_value()) {
         throw BindError("bind to foreground window fail");
     }
-    PyObject_Print(PyUnicode_FromFormat("Successfully bind to foreground window: %s\n",
-                                        title_name.value().c_str()), stdout, Py_PRINT_RAW);
+    py::print("Successfully bind to foreground window:", title_name.value());
     TH_game = ThGame::unknown;
 }
 
@@ -167,17 +163,19 @@ inline void bind_foreground() {
 namespace thtool::details {
 
 extern "C" inline BOOL CALLBACK bind_guess_proc(HWND hwnd, LPARAM lParam) {
-    auto title = get_hwnd_title(hwnd);
-    if (!title.has_value()) {
+    auto title_name = get_hwnd_title(hwnd);
+    if (!title_name.has_value()) {
         return TRUE;
     }
 
-    ::std::optional<bind::ThGame> guess_game = details::guess_is_th_window(title.value());
-    if (guess_game.has_value()) {
+    ::std::optional<bind::ThGame> thgame = details::guess_is_th_window(title_name.value());
+    if (thgame.has_value()) {
         bind::TH_hwnd = hwnd;
-        bind::TH_game = guess_game.value();
-        PyObject_Print(PyUnicode_FromFormat("Successfully bind to guessed window: %s\n",
-                                            title.value().c_str()), stdout, Py_PRINT_RAW);
+        bind::TH_game = thgame.value();
+        using namespace ::std::string_literals;
+        py::print(
+            "[thtool] Successfully bind to th"s + ::std::to_string(static_cast<::std::uint32_t>(thgame.value()))
+        );
         return FALSE;
     }
     return TRUE;
@@ -187,7 +185,7 @@ extern "C" inline BOOL CALLBACK bind_guess_proc(HWND hwnd, LPARAM lParam) {
 
 namespace thtool::bind {
 
-inline void bind_guess() {
+inline void bind_auto() {
     EnumWindows(details::bind_guess_proc, 0);
     if (!TH_hwnd.has_value()) {
         throw BindError("no match TouHou window, please open your th-game window");
@@ -199,8 +197,7 @@ inline void bind_title(py::str title) {
     if (TH_hwnd.value() == NULL) {
         throw BindError("no match window title");
     }
-    PyObject_Print(PyUnicode_FromFormat("Successfully bind to window: %s\n",
-                                        title.cast<::std::string>().c_str()), stdout, Py_PRINT_RAW);
+    py::print("Successfully bind to foreground window:", title.cast<::std::string>());
     TH_game = ThGame::unknown;
 }
 

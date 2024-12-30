@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstddef>
-#include <Windows.h>
+#include <windows.h>
 #include <tuple>
 #include <windef.h>
 #include <winuser.h>
