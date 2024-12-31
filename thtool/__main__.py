@@ -5,6 +5,7 @@ import numpy as np
 from . import window
 from . import scene
 from . import kb_control
+from . import score
 from typing import Optional
 
 def main() -> None:
@@ -44,7 +45,6 @@ def main() -> None:
     if args.always_shoot:
         kb_control.send(kb_control.Behavior.shoot, deltatime=None, in_queue=True)
 
-    THTOOL_ROOT = os.path.dirname(os.path.abspath(__file__))
     game_start_status: Optional[bool] = None # False: not start, True: start, None: not checked
     window.init_Gdiplus()
     try:
@@ -69,8 +69,8 @@ def main() -> None:
                     game_start_status = True
 
                 if args.draw:
-                    # blank = img.copy() # debug
-                    blank = np.zeros_like(img)
+                    blank = img.copy() # debug
+                    # blank = np.zeros_like(img)
 
                     # draw player
                     cv2.rectangle(blank, *player_point, (255, 0, 0))
@@ -93,6 +93,7 @@ def main() -> None:
                         cv2.rectangle(blank, *resource_point, (0, 255, 0))
 
                     cv2.imshow("thtool", blank)
+                    print("score:", score.get_score(img))
                     cv2.waitKey(1)
     except window.BindError:
         print("Checking touhou window closed")
@@ -106,6 +107,6 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print("Keyboard interrupt!")
+        print("Keyboard interrupted!")
 else:
     raise RuntimeError("This file is not intended to be imported!")

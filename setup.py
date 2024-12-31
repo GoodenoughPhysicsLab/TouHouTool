@@ -21,6 +21,7 @@ class CMakeBuild(build_ext):
         os.system(f"cmake --build \"{os.path.join(SCRIPT_DIR, 'build')}\" " + cmake_build_flags)
 
         # install file from build to thtool
+        # TODO rewrite this in CMakeLists.txt
         for root, _, files in os.walk("build"):
             if os.path.abspath(root) == extdir:
                 continue
