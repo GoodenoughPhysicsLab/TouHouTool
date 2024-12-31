@@ -193,8 +193,8 @@ inline void bind_auto() {
 }
 
 inline void bind_title(py::str title) {
-    TH_hwnd = FindWindow(NULL, py::cast<::std::string>(title).c_str());
-    if (TH_hwnd.value() == NULL) {
+    TH_hwnd = FindWindow(nullptr, py::cast<::std::string>(title).c_str());
+    if (TH_hwnd.value() == nullptr) {
         throw BindError("no match window title");
     }
     py::print("Successfully bind to foreground window:", title.cast<::std::string>());

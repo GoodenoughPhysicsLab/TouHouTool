@@ -326,6 +326,18 @@ inline auto fsl_get_resources() {
     return res;
 }
 
+inline auto fsl_get_score() {
+    ::std::uint32_t score;
+    ReadProcessMemory(
+        details::get_process_handle(),
+        reinterpret_cast<LPCVOID>(0x00474C44),
+        &score,
+        SIZE_T(4),
+        nullptr
+    );
+    return score;
+}
+
 #ifdef _MSC_VER
 #pragma warning(default: 4312)
 #endif

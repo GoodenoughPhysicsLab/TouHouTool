@@ -93,7 +93,6 @@ def main() -> None:
                         cv2.rectangle(blank, *resource_point, (0, 255, 0))
 
                     cv2.imshow("thtool", blank)
-                    print("score:", score.get_score(img))
                     cv2.waitKey(1)
     except window.BindError:
         print("Checking touhou window closed")

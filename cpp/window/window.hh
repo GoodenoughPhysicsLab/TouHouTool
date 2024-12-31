@@ -20,7 +20,7 @@ inline ULONG_PTR gdiplusToken;
 
 inline BOOL GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
     UINT num = 0, size = 0;
-    Gdiplus::ImageCodecInfo* pImageCodecInfo = NULL;
+    Gdiplus::ImageCodecInfo* pImageCodecInfo = nullptr;
 
     Gdiplus::GetImageEncodersSize(&num, &size);
     if (size == 0) {
@@ -28,7 +28,7 @@ inline BOOL GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
     }
 
     pImageCodecInfo = (Gdiplus::ImageCodecInfo*)malloc(size);
-    if (pImageCodecInfo == NULL) {
+    if (pImageCodecInfo == nullptr) {
         return FALSE;
     }
 
@@ -79,17 +79,17 @@ inline py::array_t<uint8_t> get_scene() { // TODO
     // init
     ULONG_PTR gdiplusToken;
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr);
 
     // compute
-    HDC hScreenDC = GetDC(thtool::bind::TH_hwnd.value()); // never will fail(return NULL)
+    HDC hScreenDC = GetDC(thtool::bind::TH_hwnd.value()); // never will fail(return nullptr)
                                                                 // because get_size have checked
     HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
     HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, screen.width, screen.height);
     HGDIOBJ old_obj = SelectObject(hMemoryDC, hBitmap);
     BitBlt(hMemoryDC, 0, 0, screen.width, screen.height,
         hScreenDC, 0, 0, SRCCOPY);
-    Gdiplus::Bitmap bitmap(hBitmap, NULL);
+    Gdiplus::Bitmap bitmap(hBitmap, nullptr);
 
     ::std::size_t res_size = screen.width * screen.height * 4;
     py::array_t<uint8_t> res(res_size);
@@ -108,7 +108,7 @@ inline py::array_t<uint8_t> get_scene() { // TODO
     SelectObject(hMemoryDC, old_obj);
     DeleteObject(hBitmap);
     DeleteDC(hMemoryDC);
-    ReleaseDC(NULL, hScreenDC);
+    ReleaseDC(nullptr, hScreenDC);
     Gdiplus::GdiplusShutdown(gdiplusToken);
 
     return res;
@@ -117,14 +117,14 @@ inline py::array_t<uint8_t> get_scene() { // TODO
 
 inline void init_Gdiplus() {
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    GdiplusStartup(&details::gdiplusToken, &gdiplusStartupInput, NULL);
+    GdiplusStartup(&details::gdiplusToken, &gdiplusStartupInput, nullptr);
 }
 
 inline void save_scene_img() {
     auto [width, height] = get_size();
 
     HDC hScreenDC = GetDC(thtool::bind::TH_hwnd.value());
-    if (hScreenDC == NULL) {
+    if (hScreenDC == nullptr) {
         throw bind::BindError("invalid handle");
     }
     HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
@@ -135,13 +135,13 @@ inline void save_scene_img() {
     CLSID clsid;
     details::GetEncoderClsid(L"image/bmp", &clsid);
 
-    Gdiplus::Bitmap bitmap(hBitmap, NULL);
-    bitmap.Save(L"C:\\Windows\\Temp\\thtemp.bmp", &clsid, NULL);
+    Gdiplus::Bitmap bitmap(hBitmap, nullptr);
+    bitmap.Save(L"C:\\Windows\\Temp\\thtemp.bmp", &clsid, nullptr);
 
     SelectObject(hMemoryDC, old_obj);
     DeleteObject(hBitmap);
     DeleteDC(hMemoryDC);
-    ReleaseDC(NULL, hScreenDC);
+    ReleaseDC(nullptr, hScreenDC);
 }
 
 inline void free_Gdiplus() {
