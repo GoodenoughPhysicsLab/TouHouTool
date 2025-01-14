@@ -9,17 +9,9 @@ from . import score
 from typing import Optional
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="thtool(TouHouTool) : tools for TouHou project")
+    parser = argparse.ArgumentParser(description="auto-th10: play th10 automatically")
 
     parser.add_argument("--version", action="store_true", help="show version")
-    parser.add_argument(
-        "--bind",
-        help="Bind thtool to a window, and will bind automatically if not specified"
-            "[ --bind list ] print all windows' title; "
-            "[ --bind list-guessed ] print all guessed windows' title; "
-            "[ --bind foreground ] bind to foreground window; "
-            "[ --bind <title> ] bind to a window with title <title>"
-    )
     parser.add_argument("--always-shoot", action="store_true", help="player always shoot without pressing 'z'")
     parser.add_argument("--draw", action="store_true", help="draw the scene")
 

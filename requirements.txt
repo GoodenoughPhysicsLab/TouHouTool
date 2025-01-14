@@ -1,5 +1,3 @@
 setuptools
 build
-opencv-python
 pynput
-# pytesseract

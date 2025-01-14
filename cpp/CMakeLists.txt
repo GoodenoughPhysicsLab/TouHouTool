@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(thtool LANGUAGES CXX)
+project(auto_th10 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -13,16 +13,25 @@ else()
     endif()
 endif()
 
+# remove dist directory
 if (EXISTS ${CMAKE_SOURCE_DIR}/../dist)
     file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/../dist)
+    message(STATUS "remove ${CMAKE_SOURCE_DIR}/../dist")
 endif()
-file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/../thtool.egg-info)
-# remove thtool/*.pyd
-file(GLOB thtool-pyds ${CMAKE_SOURCE_DIR}/../thtool/*.pyd)
-foreach(thtool-pyd IN LISTS thtool-pyds)
-    file(REMOVE ${thtool-pyd})
+# remove auto_th10.egg-info
+file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/../auto_th10.egg-info)
+message(STATUS "remove ${CMAKE_SOURCE_DIR}/../auto_th10.egg-info")
+# remove auto_th10/*.pyd
+file(GLOB auto_th10-pyds ${CMAKE_SOURCE_DIR}/../auto_th10/*.pyd)
+foreach(auto_th10-pyd IN LISTS auto_th10-pyds)
+    file(REMOVE ${auto_th10-pyd})
+    message(STATUS "remove ${auto_th10-pyd}")
 endforeach()
 
 add_subdirectory(pybind11)
-add_subdirectory(window)
-add_subdirectory(objects)
+
+pybind11_add_module(${PROJECT_NAME} src/auto_th10.cc)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_SOURCE_DIR}/../auto_th10)
