@@ -1,9 +1,6 @@
 #pragma once
 
-#include <pybind11/pybind11.h>
 #include "float32.hh"
-
-namespace py = pybind11;
 
 namespace auto_th10::obj {
 
@@ -22,23 +19,23 @@ public:
     inline ThObject_() noexcept = delete;
 
     inline ThObject_(float32_type x, float32_type y) noexcept
-        : x_(x), y_(y) {
+        : x_{x}, y_{y} {
     }
 
-    inline float32_type get_x() const noexcept {
-        return this->x_;
+    inline float32_type get_x(this ThObject_<Child> const& self) noexcept {
+        return self.x_;
     }
 
-    inline float32_type get_y() const noexcept {
-        return this->y_;
+    inline float32_type get_y(this ThObject_<Child> const& self) noexcept {
+        return self.y_;
     }
 
-    inline float32_type get_width() const noexcept {
-        return (static_cast<Child const*>(this))->width;
+    inline float32_type get_width(this auto const& self) noexcept {
+        return self.width;
     }
 
-    inline float32_type get_height() const noexcept {
-        return (static_cast<Child const*>(this))->height;
+    inline float32_type get_height(this auto const& self) noexcept {
+        return self.height;
     }
 };
 
@@ -52,14 +49,9 @@ class Player : public details::ThObject_<Player> {
 
 public:
     inline Player() noexcept = delete;
-    ~Player() = default;
 
     inline Player(float32_type x, float32_type y) noexcept
-        : ThObject_(x, y) {
-    }
-
-    inline py::str __repr__() const noexcept {
-        return py::str("Player(x={}, y={})").format(this->x_, this->y_);
+        : ThObject_{x, y} {
     }
 };
 
@@ -69,14 +61,9 @@ class Enemy : public details::ThObject_<Enemy> {
 
 public:
     inline Enemy() noexcept = delete;
-    ~Enemy() = default;
 
     inline Enemy(float32_type x, float32_type y, float32_type width, float32_type height) noexcept
-        : ThObject_(x, y), width(width), height(height) {
-    }
-
-    inline py::str __repr__() const noexcept {
-        return py::str("Enemy(x={}, y={}, width={}, height={})").format(this->x_, this->y_, this->width, this->height);
+        : ThObject_{x, y}, width{width}, height{height} {
     }
 };
 
@@ -88,20 +75,14 @@ class EnemyBullet : public details::ThObject_<EnemyBullet> {
 
 public:
     inline EnemyBullet() noexcept = delete;
-    ~EnemyBullet() = default;
 
     inline EnemyBullet(float32_type x, float32_type y, float32_type width, float32_type height, float32_type dx,
                        float32_type dy) noexcept
-        : ThObject_(x, y), width(width), height(height), dx(dx), dy(dy) {
+        : ThObject_{x, y}, width{width}, height{height}, dx{dx}, dy{dy} {
     }
 
-    inline float32_type get_direction() const noexcept {
-        return dy / dx;
-    }
-
-    inline py::str __repr__() const noexcept {
-        return py::str("EnemyBullet(x={}, y={}, width={}, height={}, dx={}, dy={})")
-            .format(this->x_, this->y_, this->width, this->height, this->dx, this->dy);
+    inline float32_type get_direction(this EnemyBullet const& self) noexcept {
+        return self.dy / self.dx;
     }
 };
 
@@ -111,20 +92,14 @@ class EnemyLaser : public details::ThObject_<EnemyLaser> {
 
 public:
     inline EnemyLaser() noexcept = delete;
-    ~EnemyLaser() = default;
 
     inline EnemyLaser(float32_type x, float32_type y, float32_type width, float32_type height,
                       float32_type radian) noexcept
-        : ThObject_(x, y), width(width), height(height), radian(radian) {
+        : ThObject_{x, y}, width{width}, height{height}, radian{radian} {
     }
 
-    inline py::str __repr__() const noexcept {
-        return py::str("EnemyLaser(x={}, y={}, width={}, height={}, radian={})")
-            .format(this->x_, this->y_, this->width, this->height, this->radian);
-    }
-
-    inline float32_type get_radian() const noexcept {
-        return this->radian;
+    inline float32_type get_radian(this EnemyLaser const& self) noexcept {
+        return self.radian;
     }
 };
 
@@ -134,14 +109,9 @@ class Resource : public details::ThObject_<Resource> {
 
 public:
     inline Resource() noexcept = delete;
-    ~Resource() = default;
 
     inline Resource(float32_type x, float32_type y) noexcept
         : ThObject_(x, y) {
-    }
-
-    inline py::str __repr__() const noexcept {
-        return py::str("Resource(x={}, y={})").format(this->x_, this->y_);
     }
 };
 

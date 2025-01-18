@@ -10,6 +10,7 @@
 #include <windef.h>
 #include "float32.hh"
 #include "process.hh"
+#include "thobjects.hh"
 
 namespace auto_th10::readmem {
 
@@ -23,12 +24,6 @@ public:
         return err_msg.data();
     }
 };
-
-/* Note:
- *   this file get position by read memory
- *   but, it's not the position on screen
- *   the code thansform it to screen position is in thtool/scene.py
- */
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4312)
@@ -57,7 +52,7 @@ inline auto get_player() {
                       SIZE_T(4),
                       &nbr);
 
-    return ::std::make_tuple(x, y);
+    return obj::Player{x, y};
 }
 
 inline auto get_enemies() {
@@ -78,10 +73,7 @@ inline auto get_enemies() {
                       SIZE_T(4),
                       &nbr);
 
-    ::std::vector<::std::tuple<float32_type,
-                                float32_type,
-                                float32_type,
-                                float32_type>> res{};
+    ::std::vector<obj::Enemy> res{};
     if (obj_base) {
         while (true)
         {
@@ -154,12 +146,7 @@ inline auto get_enemy_bullets() {
         throw GameNotStartError();
     }
     uint32_t ebx = base + 0x60;
-    ::std::vector<::std::tuple<float32_type,
-                                float32_type,
-                                float32_type,
-                                float32_type,
-                                float32_type,
-                                float32_type>> res{};
+    ::std::vector<obj::EnemyBullet> res{};
     for (int _{}; _ < 2000; ++_)
     {
         uint32_t edi = ebx + 0x400;
@@ -243,11 +230,7 @@ inline auto get_enemy_lasers() {
                       SIZE_T(4),
                       &nbr);
 
-    ::std::vector<::std::tuple<float32_type,
-                                float32_type,
-                                float32_type,
-                                float32_type,
-                                float32_type>> res{};
+    ::std::vector<obj::EnemyLaser> res{};
     if (esi)
     {
         while (true)
@@ -257,7 +240,7 @@ inline auto get_enemy_lasers() {
                               &ebx,
                               SIZE_T(4),
                               &nbr);
-            float32_type x, y, h, w, arc;
+            float32_type x, y, h, w, radian;
             ReadProcessMemory(process::get_process_handle(),
                               reinterpret_cast<LPCVOID>(esi + 0x24),
                               &x,
@@ -270,7 +253,7 @@ inline auto get_enemy_lasers() {
                               &nbr);
             ReadProcessMemory(process::get_process_handle(),
                               reinterpret_cast<LPCVOID>(esi + 0x3C),
-                              &arc,
+                              &radian,
                               SIZE_T(4),
                               &nbr);
             ReadProcessMemory(process::get_process_handle(),
@@ -283,7 +266,7 @@ inline auto get_enemy_lasers() {
                               &w,
                               SIZE_T(4),
                               &nbr);
-            res.emplace_back(x, y, w, h, arc);
+            res.emplace_back(x, y, w, h, radian);
             if (ebx == 0) {
                 break;
             }
@@ -306,7 +289,7 @@ inline auto get_resources() {
     }
     uint32_t esi = base + 0x14;
     uint32_t ebp = esi + 0x3B0;
-    ::std::vector<::std::tuple<float32_type, float32_type>> res{};
+    ::std::vector<obj::Resource> res{};
 
     for (int i = 0; i < 2000; i++)
     {

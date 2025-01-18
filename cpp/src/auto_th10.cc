@@ -19,23 +19,21 @@ PYBIND11_MODULE(auto_th10, m) {
         .def(py::init<>());
 
     py::class_<auto_th10::obj::Player>(m, "Player")
-        .def(py::init<auto_th10::float32_type, auto_th10::float32_type>())
-        .def("__repr__", &auto_th10::obj::Player::__repr__)
+        // .def(py::init<auto_th10::float32_type, auto_th10::float32_type>())
         .def("get_x", &auto_th10::obj::Player::get_x)
         .def("get_y", &auto_th10::obj::Player::get_y)
-        .def("get_width", &auto_th10::obj::Player::get_width)
-        .def("get_height", &auto_th10::obj::Player::get_height);
+        .def("get_width", &auto_th10::obj::Player::template get_width<auto_th10::obj::Player>)
+        .def("get_height", &auto_th10::obj::Player::template get_height<auto_th10::obj::Player>);
 
     py::class_<auto_th10::obj::Enemy>(m, "Enemy")
         .def(py::init<auto_th10::float32_type,
                             auto_th10::float32_type,
                             auto_th10::float32_type,
                             auto_th10::float32_type>())
-        .def("__repr__", &auto_th10::obj::Enemy::__repr__)
         .def("get_x", &auto_th10::obj::Enemy::get_x)
         .def("get_y", &auto_th10::obj::Enemy::get_y)
-        .def("get_width", &auto_th10::obj::Enemy::get_width)
-        .def("get_height", &auto_th10::obj::Enemy::get_height);
+        .def("get_width", &auto_th10::obj::Enemy::get_width<auto_th10::obj::Enemy>)
+        .def("get_height", &auto_th10::obj::Enemy::get_height<auto_th10::obj::Enemy>);
 
     py::class_<auto_th10::obj::EnemyBullet>(m, "EnemyBullet")
         .def(py::init<auto_th10::float32_type,
@@ -44,11 +42,10 @@ PYBIND11_MODULE(auto_th10, m) {
                             auto_th10::float32_type,
                             auto_th10::float32_type,
                             auto_th10::float32_type>())
-        .def("__repr__", &auto_th10::obj::EnemyBullet::__repr__)
         .def("get_x", &auto_th10::obj::EnemyBullet::get_x)
         .def("get_y", &auto_th10::obj::EnemyBullet::get_y)
-        .def("get_width", &auto_th10::obj::EnemyBullet::get_width)
-        .def("get_height", &auto_th10::obj::EnemyBullet::get_height)
+        .def("get_width", &auto_th10::obj::EnemyBullet::get_width<auto_th10::obj::EnemyBullet>)
+        .def("get_height", &auto_th10::obj::EnemyBullet::get_height<auto_th10::obj::EnemyBullet>)
         .def("get_direction", &auto_th10::obj::EnemyBullet::get_direction);
 
     py::class_<auto_th10::obj::EnemyLaser>(m, "EnemyLaser")
@@ -57,18 +54,16 @@ PYBIND11_MODULE(auto_th10, m) {
                         auto_th10::float32_type,
                         auto_th10::float32_type,
                         auto_th10::float32_type>())
-        .def("__repr__", &auto_th10::obj::EnemyLaser::__repr__)
         .def("get_x", &auto_th10::obj::EnemyLaser::get_x)
         .def("get_y", &auto_th10::obj::EnemyLaser::get_y)
-        .def("get_width", &auto_th10::obj::EnemyLaser::get_width)
-        .def("get_height", &auto_th10::obj::EnemyLaser::get_height)
+        .def("get_width", &auto_th10::obj::EnemyLaser::get_width<auto_th10::obj::EnemyLaser>)
+        .def("get_height", &auto_th10::obj::EnemyLaser::get_height<auto_th10::obj::EnemyLaser>)
         .def("get_radian", &auto_th10::obj::EnemyLaser::get_radian);
 
     py::class_<auto_th10::obj::Resource>(m, "Resource")
         .def(py::init<auto_th10::float32_type, auto_th10::float32_type>())
-        .def("__repr__", &auto_th10::obj::Resource::__repr__)
         .def("get_x", &auto_th10::obj::Resource::get_x)
         .def("get_y", &auto_th10::obj::Resource::get_y)
-        .def("get_width", &auto_th10::obj::Resource::get_width)
-        .def("get_height", &auto_th10::obj::Resource::get_height);
+        .def("get_width", &auto_th10::obj::Resource::get_width<auto_th10::obj::Resource>)
+        .def("get_height", &auto_th10::obj::Resource::get_height<auto_th10::obj::Resource>);
 }

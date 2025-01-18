@@ -41,7 +41,7 @@ inline HWND get_hwnd() noexcept {
 
 /* Get TH10 process ID
  */
-inline DWORD get_pid() {
+inline DWORD get_pid() noexcept {
     static DWORD pid{};
     if (pid == 0) {
         GetWindowThreadProcessId(get_hwnd(), &pid);
@@ -51,7 +51,7 @@ inline DWORD get_pid() {
 
 /* Get TH10 process handle
  */
-inline HANDLE get_process_handle() {
+inline HANDLE get_process_handle() noexcept {
     static HANDLE handle{};
     if (handle == nullptr) {
         handle = OpenProcess(PROCESS_VM_READ, true, get_pid());
